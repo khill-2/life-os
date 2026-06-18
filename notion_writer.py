@@ -5,8 +5,8 @@ from notion_client import Client
 
 from config import (
     NOTION_TOKEN,
-    DB_RECRUITING, DB_SCHOOL, DB_FINANCE, DB_HEALTH,
-    SEEDED_RECRUITING, SEEDED_FINANCE,
+    DB_RECRUITING, DB_SCHOOL, DB_HEALTH,
+    SEEDED_RECRUITING,
 )
 
 
@@ -102,40 +102,6 @@ def write_recruiting(entries: list[dict], dry_run: bool = False) -> tuple[int, i
                 "Next Action":  {"rich_text": _rich_text(next_action)},
                 "Last Contact": _date(entry.get("last_contact")),
                 "Notes":        {"rich_text": _rich_text(entry.get("notes", ""))},
-            },
-        )
-        added += 1
-        existing.add(key)
-
-    return added, skipped
-
-
-def write_finance(entries: list[dict], dry_run: bool = False) -> tuple[int, int]:
-    notion   = _client()
-    existing = _existing_titles(notion, DB_FINANCE) | SEEDED_FINANCE
-    added = skipped = 0
-
-    for entry in entries:
-        key = _normalize(entry["item"])
-        if key in existing:
-            skipped += 1
-            continue
-
-        if dry_run:
-            print(f"  [DRY RUN] Finance: {entry['item']} ({entry['type']})")
-            added += 1
-            existing.add(key)
-            continue
-
-        notion.pages.create(
-            parent={"database_id": DB_FINANCE},
-            properties={
-                "Item":     {"title": _title(entry["item"])},
-                "Type":     _select(entry["type"]),
-                "Amount":   {"rich_text": _rich_text(entry.get("amount", ""))},
-                "Due Date": _date(entry.get("due_date")),
-                "Status":   _select("Pending"),
-                "Notes":    {"rich_text": _rich_text(entry.get("notes", ""))},
             },
         )
         added += 1

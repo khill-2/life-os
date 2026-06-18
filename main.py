@@ -17,7 +17,7 @@ import sys
 from config import GMAIL_QUERIES, MAX_RESULTS_PER_QUERY
 from gmail_scraper import fetch_emails, ACCOUNTS
 from classifier import classify_recruiting, classify_finance, classify_school
-from notion_writer import write_recruiting, write_finance, write_school, write_health_backfill
+from notion_writer import write_recruiting, write_school, write_health_backfill
 
 
 def parse_args():
@@ -28,6 +28,7 @@ def parse_args():
     p.add_argument("--accounts",  nargs="+", default=None, metavar="ACCOUNT",
                    help=f"Which accounts to scrape (default: all). Choices: {list(ACCOUNTS)}")
     p.add_argument("--no-health", action="store_true", help="Skip Health Log backfill.")
+    p.add_argument("--dashboard", action="store_true", help="Print terminal finance dashboard and exit.")
     return p.parse_args()
 
 
@@ -55,6 +56,11 @@ def main():
     args     = parse_args()
     dry_run  = args.dry_run
     accounts = args.accounts or list(ACCOUNTS.keys())
+
+    if args.dashboard:
+        from finance_generator import _load_snapshot, show_terminal
+        show_terminal(_load_snapshot())
+        return
 
     # Validate requested accounts
     invalid = [a for a in accounts if a not in ACCOUNTS]
@@ -127,9 +133,6 @@ def main():
     r_added, r_skipped = write_recruiting(recruiting_entries, dry_run=dry_run)
     total_skipped += r_skipped
 
-    f_added, f_skipped = write_finance(finance_entries, dry_run=dry_run)
-    total_skipped += f_skipped
-
     s_added, s_skipped = write_school(school_entries, dry_run=dry_run)
     total_skipped += s_skipped
 
@@ -147,7 +150,6 @@ def main():
     # ------------------------------------------------------------------
     print()
     print(f"✅ Recruiting: {r_added} new entries added")
-    print(f"✅ Finance:    {f_added} new entries added")
     print(f"✅ School:     {s_added} new entries added")
     print(f"✅ Health Log: {h_added} days backfilled")
     if total_skipped:
