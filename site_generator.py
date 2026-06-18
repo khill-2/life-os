@@ -1,4 +1,270 @@
-<!DOCTYPE html>
+#!/usr/bin/env python3
+"""
+Generates index.html — the full KCH OS site (Finance, Recruiting, School, Health).
+Reads from data/*.json and financial_snapshot_*.json.
+
+Usage:
+    python site_generator.py           # generate index.html
+    python site_generator.py --finance # terminal finance view only
+"""
+
+import glob
+import json
+import os
+import sys
+from collections import defaultdict
+from datetime import date, datetime
+
+DATA_DIR = "data"
+
+# ── Category config (finance) ────────────────────────────────────────────────
+
+CATEGORY_MAP = {
+    "Restaurants":          "Food & Dining",
+    "Supermarkets":         "Food & Dining",
+    "Food & Drink":         "Food & Dining",
+    "Gasoline":             "Transportation",
+    "Travel/Entertainment": "Entertainment",
+    "Education":            "Entertainment",
+    "Automotive":           "Auto",
+    "Medical Services":     "Health",
+    "Merchandise":          "Shopping",
+    "Home Improvement":     "Shopping",
+    "Services":             "Other",
+}
+
+CATEGORY_COLORS = {
+    "Food & Dining":  "#f59e0b",
+    "Housing":        "#3b82f6",
+    "Transportation": "#8b5cf6",
+    "Entertainment":  "#10b981",
+    "Auto":           "#f43f5e",
+    "Health":         "#06b6d4",
+    "Shopping":       "#f97316",
+    "Workspace":      "#a78bfa",
+    "Insurance":      "#64748b",
+    "Investments":    "#22c55e",
+    "Fees":           "#ef4444",
+    "Trading":        "#fbbf24",
+    "Other":          "#94a3b8",
+}
+
+STAGE_COLORS = {
+    "Applied":      "#8b949e",
+    "Phone Screen": "#4a9eff",
+    "OA":           "#f59e0b",
+    "Interview":    "#f97316",
+    "Offer":        "#39d353",
+    "Closed":       "#3d444d",
+    "Applying":     "#c9d1d9",
+}
+
+# ── Loaders ──────────────────────────────────────────────────────────────────
+
+def _load_json(filename: str) -> list:
+    path = os.path.join(DATA_DIR, filename)
+    if not os.path.exists(path):
+        return []
+    with open(path) as f:
+        return json.load(f).get("entries", [])
+
+
+def _load_snapshot() -> dict | None:
+    files = sorted(glob.glob("financial_snapshot_*.json"))
+    if not files:
+        return None
+    with open(files[-1]) as f:
+        return json.load(f)
+
+# ── Finance computation ──────────────────────────────────────────────────────
+
+def _compute_monthly_spending(snap: dict) -> dict:
+    monthly: dict = defaultdict(lambda: defaultdict(float))
+
+    for tx in snap["accounts"]["discover_it"]["transactions"]:
+        if tx["category"] in ("Payments and Credits", "Fees"):
+            continue
+        if tx["amount"] <= 0:
+            continue
+        cat = CATEGORY_MAP.get(tx["category"], tx["category"])
+        monthly[tx["date"][:7]][cat] += tx["amount"]
+
+    for tx in snap["accounts"]["chase_sapphire_preferred"]["transactions"]:
+        if tx["amount"] >= 0:
+            continue
+        cat = CATEGORY_MAP.get(tx["category"], tx["category"])
+        monthly[tx["date"][:7]][cat] += abs(tx["amount"])
+
+    for tx in snap["accounts"]["capital_one_savings"]["transactions"]:
+        if "OHANA" in tx["description"]:
+            monthly[tx["date"][:7]]["Housing"] += abs(tx["amount"])
+
+    for tx in snap["accounts"]["capital_one_checking"]["transactions"]:
+        desc = tx["description"].upper()
+        amt  = tx["amount"]
+        if "EMBARC" in desc:
+            monthly[tx["date"][:7]]["Workspace"] += abs(amt)
+        elif "USAA" in desc and amt < 0:
+            monthly[tx["date"][:7]]["Insurance"] += abs(amt)
+        elif "KALSHI" in desc and amt < 0:
+            monthly[tx["date"][:7]]["Trading"] += abs(amt)
+
+    return {
+        m: {k: round(v, 2) for k, v in sorted(cats.items(), key=lambda x: -x[1])}
+        for m, cats in sorted(monthly.items())
+    }
+
+
+def _compute_portfolio(snap: dict) -> dict:
+    positions = []
+    for p in snap["accounts"]["schwab_brokerage"]["positions"]:
+        positions.append({
+            "symbol":   p["symbol"],
+            "value":    p["market_value"],
+            "gain":     p["gain_loss"],
+            "gain_pct": p["gain_loss_pct"],
+            "account":  "Schwab",
+        })
+    for p in snap["accounts"]["fidelity_roth_ira"]["positions"]:
+        if p.get("symbol") == "SPAXX":
+            continue
+        positions.append({
+            "symbol":   p["symbol"],
+            "value":    p["market_value"],
+            "gain":     p.get("gain_loss", 0),
+            "gain_pct": p.get("gain_loss_pct", 0),
+            "account":  "Fidelity Roth",
+        })
+    schwab   = snap["accounts"]["schwab_brokerage"]
+    fidelity = snap["accounts"]["fidelity_roth_ira"]
+    return {
+        "total":      schwab["total_value"] + fidelity["total_value"],
+        "total_gain": schwab["total_gain_loss"] + fidelity["total_gain_loss"],
+        "positions":  sorted(positions, key=lambda x: -x["value"]),
+    }
+
+# ── Health computation ────────────────────────────────────────────────────────
+
+def _compute_health_stats(entries: list) -> dict:
+    if not entries:
+        return {"streak_workout": 0, "streak_ate_well": 0, "pct_workout_30": 0, "pct_ate_well_30": 0}
+
+    sorted_entries = sorted(entries, key=lambda e: e["date"], reverse=True)
+
+    def streak(field: str) -> int:
+        count = 0
+        today = date.today()
+        for e in sorted_entries:
+            d = date.fromisoformat(e["date"])
+            delta = (today - d).days
+            if delta != count:
+                break
+            if e.get(field):
+                count += 1
+            else:
+                break
+        return count
+
+    recent_30 = sorted_entries[:30]
+    pct_w  = round(sum(1 for e in recent_30 if e.get("worked_out")) / len(recent_30) * 100) if recent_30 else 0
+    pct_aw = round(sum(1 for e in recent_30 if e.get("ate_well"))   / len(recent_30) * 100) if recent_30 else 0
+
+    return {
+        "streak_workout":  streak("worked_out"),
+        "streak_ate_well": streak("ate_well"),
+        "pct_workout_30":  pct_w,
+        "pct_ate_well_30": pct_aw,
+    }
+
+# ── Recruiting computation ────────────────────────────────────────────────────
+
+def _compute_recruiting_stats(entries: list) -> dict:
+    stage_order = ["Applying", "Applied", "Phone Screen", "OA", "Interview", "Offer", "Closed"]
+    counts = defaultdict(int)
+    for e in entries:
+        counts[e.get("stage", "Applied")] += 1
+    return {
+        "by_stage": {s: counts.get(s, 0) for s in stage_order},
+        "active":   sum(counts[s] for s in stage_order if s not in ("Closed",)),
+    }
+
+# ── Site data assembly ────────────────────────────────────────────────────────
+
+def build_site_data() -> dict:
+    snap        = _load_snapshot()
+    recruiting  = _load_json("recruiting.json")
+    school      = _load_json("school.json")
+    health      = _load_json("health.json")
+
+    updated = date.today().isoformat()
+
+    finance_data: dict = {}
+    if snap:
+        updated          = snap["snapshot_date"]
+        monthly_spending = _compute_monthly_spending(snap)
+        portfolio        = _compute_portfolio(snap)
+        nw               = snap["net_worth_summary"]
+        income           = snap["income_summary"]
+        months           = list(monthly_spending.keys())
+        latest_month     = months[-1] if months else None
+        latest_spend     = monthly_spending.get(latest_month, {})
+
+        finance_data = {
+            "net_worth": {
+                "total":   nw["total_assets"],
+                "cash":    nw["liquid_cash"],
+                "taxable": nw["taxable_investments"],
+                "ira":     nw["tax_advantaged_investments"],
+            },
+            "income": {
+                "avg_monthly_net": round(income["avg_biweekly_net"] * 26 / 12, 2),
+                "ytd_net":         income["ytd_net_income"],
+                "source":          income["source"],
+            },
+            "monthly_spending":   monthly_spending,
+            "monthly_totals": {
+                m: round(sum(cats.values()), 2)
+                for m, cats in monthly_spending.items()
+            },
+            "latest_month":       latest_month,
+            "total_spend_latest": round(sum(latest_spend.values()), 2),
+            "portfolio":          portfolio,
+            "category_colors":    CATEGORY_COLORS,
+        }
+
+    month_label = ""
+    if finance_data.get("latest_month"):
+        dt = datetime.strptime(finance_data["latest_month"], "%Y-%m")
+        month_label = dt.strftime("%B %Y")
+
+    school_sorted = sorted(
+        school,
+        key=lambda e: (e.get("due_date") or "9999-99-99"),
+    )
+
+    return {
+        "updated":      updated,
+        "month_label":  month_label,
+        "finance":      finance_data,
+        "recruiting": {
+            "entries": sorted(recruiting, key=lambda e: e.get("last_contact") or "", reverse=True),
+            "stats":   _compute_recruiting_stats(recruiting),
+            "stage_colors": STAGE_COLORS,
+        },
+        "school": {
+            "entries": school_sorted,
+            "today":   date.today().isoformat(),
+        },
+        "health": {
+            "entries": sorted(health, key=lambda e: e["date"], reverse=True)[:30],
+            "stats":   _compute_health_stats(health),
+            "today":   date.today().isoformat(),
+        },
+    }
+
+# ── HTML template ─────────────────────────────────────────────────────────────
+
+_TEMPLATE = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -215,7 +481,7 @@ tr:hover td { background: rgba(74,158,255,0.03); }
   <button class="nav-tab" onclick="showTab('recruiting')">Recruiting</button>
   <button class="nav-tab" onclick="showTab('school')">School</button>
   <button class="nav-tab" onclick="showTab('health')">Health</button>
-  <div class="nav-right">SNAPSHOT // 2026-06-18</div>
+  <div class="nav-right">SNAPSHOT // __UPDATED__</div>
 </nav>
 
 <!-- ── Finance ──────────────────────────────────────────────── -->
@@ -291,177 +557,7 @@ tr:hover td { background: rgba(74,158,255,0.03); }
 </div>
 
 <script>
-const D = {
-  "updated": "2026-06-18",
-  "month_label": "June 2026",
-  "finance": {
-    "net_worth": {
-      "total": 51293.74,
-      "cash": 10421.14,
-      "taxable": 37600.65,
-      "ira": 3271.95
-    },
-    "income": {
-      "avg_monthly_net": 6852.95,
-      "ytd_net": 25293.23,
-      "source": "Rivian and VW Group (RIVIAN AND VW GR)"
-    },
-    "monthly_spending": {
-      "2026-01": {
-        "Other": 51.8,
-        "Transportation": 40.0
-      },
-      "2026-02": {
-        "Workspace": 125.75,
-        "Health": 55.0,
-        "Food & Dining": 50.56,
-        "Entertainment": 50.0,
-        "Shopping": 22.97
-      },
-      "2026-03": {
-        "Housing": 1398.0,
-        "Food & Dining": 405.76,
-        "Workspace": 219.16,
-        "Transportation": 98.97,
-        "Shopping": 58.48,
-        "Entertainment": 57.26
-      },
-      "2026-04": {
-        "Housing": 1398.0,
-        "Food & Dining": 287.49,
-        "Auto": 238.75,
-        "Workspace": 216.85,
-        "Insurance": 176.0
-      },
-      "2026-05": {
-        "Housing": 1398.0,
-        "Food & Dining": 391.4,
-        "Insurance": 290.0,
-        "Entertainment": 144.0,
-        "Workspace": 109.15
-      },
-      "2026-06": {
-        "Housing": 1212.26,
-        "Insurance": 800.0,
-        "Food & Dining": 231.16,
-        "Trading": 50.21,
-        "Workspace": 45.54,
-        "Entertainment": 35.0
-      }
-    },
-    "monthly_totals": {
-      "2026-01": 91.8,
-      "2026-02": 304.28,
-      "2026-03": 2237.63,
-      "2026-04": 2317.09,
-      "2026-05": 2332.55,
-      "2026-06": 2374.17
-    },
-    "latest_month": "2026-06",
-    "total_spend_latest": 2374.17,
-    "portfolio": {
-      "total": 40872.6,
-      "total_gain": 7156.17,
-      "positions": [
-        {
-          "symbol": "VOO",
-          "value": 22073.89,
-          "gain": 1784.52,
-          "gain_pct": 8.8,
-          "account": "Schwab"
-        },
-        {
-          "symbol": "SPY",
-          "value": 10438.96,
-          "gain": 3809.99,
-          "gain_pct": 57.47,
-          "account": "Schwab"
-        },
-        {
-          "symbol": "SWPPX",
-          "value": 3965.31,
-          "gain": 604.34,
-          "gain_pct": 17.98,
-          "account": "Schwab"
-        },
-        {
-          "symbol": "VOO",
-          "value": 2508.27,
-          "gain": 708.48,
-          "gain_pct": 39.36,
-          "account": "Fidelity Roth"
-        },
-        {
-          "symbol": "VXUS",
-          "value": 1032.25,
-          "gain": 32.25,
-          "gain_pct": 3.22,
-          "account": "Schwab"
-        },
-        {
-          "symbol": "FXAIX",
-          "value": 756.59,
-          "gain": 216.59,
-          "gain_pct": 40.11,
-          "account": "Fidelity Roth"
-        }
-      ]
-    },
-    "category_colors": {
-      "Food & Dining": "#f59e0b",
-      "Housing": "#3b82f6",
-      "Transportation": "#8b5cf6",
-      "Entertainment": "#10b981",
-      "Auto": "#f43f5e",
-      "Health": "#06b6d4",
-      "Shopping": "#f97316",
-      "Workspace": "#a78bfa",
-      "Insurance": "#64748b",
-      "Investments": "#22c55e",
-      "Fees": "#ef4444",
-      "Trading": "#fbbf24",
-      "Other": "#94a3b8"
-    }
-  },
-  "recruiting": {
-    "entries": [],
-    "stats": {
-      "by_stage": {
-        "Applying": 0,
-        "Applied": 0,
-        "Phone Screen": 0,
-        "OA": 0,
-        "Interview": 0,
-        "Offer": 0,
-        "Closed": 0
-      },
-      "active": 0
-    },
-    "stage_colors": {
-      "Applied": "#8b949e",
-      "Phone Screen": "#4a9eff",
-      "OA": "#f59e0b",
-      "Interview": "#f97316",
-      "Offer": "#39d353",
-      "Closed": "#3d444d",
-      "Applying": "#c9d1d9"
-    }
-  },
-  "school": {
-    "entries": [],
-    "today": "2026-06-17"
-  },
-  "health": {
-    "entries": [],
-    "stats": {
-      "streak_workout": 0,
-      "streak_ate_well": 0,
-      "pct_workout_30": 0,
-      "pct_ate_well_30": 0
-    },
-    "today": "2026-06-17"
-  }
-};
+const D = __DATA_JSON__;
 
 // ── Tab navigation ────────────────────────────────────────────
 function showTab(name) {
@@ -769,3 +865,30 @@ function badge(text, color) {
 </script>
 </body>
 </html>
+"""
+
+
+def generate_site(out_path: str = "index.html") -> None:
+    data = build_site_data()
+    html = (
+        _TEMPLATE
+        .replace("__DATA_JSON__", json.dumps(data, indent=2))
+        .replace("__UPDATED__",   data["updated"])
+    )
+    with open(out_path, "w") as f:
+        f.write(html)
+    print(f"Generated {out_path}")
+
+
+def show_terminal_finance() -> None:
+    from finance_generator import _load_snapshot, show_terminal
+    snap = _load_snapshot()
+    show_terminal(snap)
+
+
+if __name__ == "__main__":
+    if "--finance" in sys.argv:
+        show_terminal_finance()
+    else:
+        generate_site()
+        print("Open index.html or push to Cloudflare Pages.")

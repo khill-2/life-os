@@ -16,8 +16,9 @@ import sys
 
 from config import GMAIL_QUERIES, MAX_RESULTS_PER_QUERY
 from gmail_scraper import fetch_emails, ACCOUNTS
-from classifier import classify_recruiting, classify_finance, classify_school
-from notion_writer import write_recruiting, write_school, write_health_backfill
+from classifier import classify_recruiting, classify_school
+from json_writer import write_recruiting, write_school, write_health_backfill
+from site_generator import generate_site
 
 
 def parse_args():
@@ -58,8 +59,8 @@ def main():
     accounts = args.accounts or list(ACCOUNTS.keys())
 
     if args.dashboard:
-        from finance_generator import _load_snapshot, show_terminal
-        show_terminal(_load_snapshot())
+        from site_generator import show_terminal_finance
+        show_terminal_finance()
         return
 
     # Validate requested accounts
@@ -79,7 +80,6 @@ def main():
     print(f"Fetching emails from Gmail ({', '.join(accounts)} account(s))...")
 
     recruiting_entries: list[dict] = []
-    finance_entries:    list[dict] = []
     school_entries:     list[dict] = []
 
     print("  → Searching recruiting signals...")
@@ -89,14 +89,6 @@ def main():
         entry = classify_recruiting(email)
         if entry:
             recruiting_entries.append(entry)
-
-    print("  → Searching finance signals...")
-    for email in _fetch_all_accounts(
-        _build_query(GMAIL_QUERIES["finance"], args.since), MAX_RESULTS_PER_QUERY, accounts
-    ):
-        entry = classify_finance(email)
-        if entry:
-            finance_entries.append(entry)
 
     print("  → Searching school/deadline signals...")
     for email in _fetch_all_accounts(
@@ -118,18 +110,16 @@ def main():
         return out
 
     recruiting_entries = _dedup(recruiting_entries, "company")
-    finance_entries    = _dedup(finance_entries,    "item")
     school_entries     = _dedup(school_entries,     "assignment")
 
-    print(f"\nClassified: {len(recruiting_entries)} recruiting, "
-          f"{len(finance_entries)} finance, {len(school_entries)} school\n")
+    print(f"\nClassified: {len(recruiting_entries)} recruiting, {len(school_entries)} school\n")
 
     # ------------------------------------------------------------------
     # Step 2 — Write to Notion
     # ------------------------------------------------------------------
     total_skipped = 0
 
-    print("Writing to Notion...")
+    print("Writing to local data...")
     r_added, r_skipped = write_recruiting(recruiting_entries, dry_run=dry_run)
     total_skipped += r_skipped
 
@@ -154,6 +144,10 @@ def main():
     print(f"✅ Health Log: {h_added} days backfilled")
     if total_skipped:
         print(f"⚠️  Skipped:   {total_skipped} duplicates")
+
+    # Regenerate site after every sync
+    print("\nRegenerating site...")
+    generate_site()
 
 
 if __name__ == "__main__":
