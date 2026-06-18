@@ -159,46 +159,7 @@ _HTML_TEMPLATE = r"""<!DOCTYPE html>
     background-image: radial-gradient(circle at 1px 1px, #1c2333 1px, transparent 0);
     background-size: 28px 28px;
   }
-  #auth-gate {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    gap: 20px;
-  }
-  #auth-gate h2 {
-    font-size: 12px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  #auth-gate input {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 10px 16px;
-    font-size: 14px;
-    width: 260px;
-    outline: none;
-    font-family: monospace;
-  }
-  #auth-gate input:focus { border-color: var(--accent); }
-  #auth-gate button {
-    background: var(--accent);
-    color: #000;
-    border: none;
-    padding: 10px 28px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    width: 260px;
-  }
-  #auth-gate button:hover { opacity: 0.85; }
-  #auth-error { color: var(--red); font-size: 11px; letter-spacing: 1px; }
-  #dashboard { display: none; max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
+  #dashboard { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
   .site-header {
     display: flex;
     align-items: center;
@@ -335,13 +296,6 @@ _HTML_TEMPLATE = r"""<!DOCTYPE html>
 </head>
 <body>
 
-<div id="auth-gate">
-  <h2><span style="color:#4a9eff">KCH</span> / OS</h2>
-  <input type="password" id="pw-input" placeholder="Access key" autocomplete="current-password" />
-  <button onclick="checkAuth()">AUTHENTICATE</button>
-  <div id="auth-error"></div>
-</div>
-
 <div id="dashboard">
   <header class="site-header">
     <div class="logo"><span>KCH</span> / OS — FINANCE</div>
@@ -376,34 +330,7 @@ _HTML_TEMPLATE = r"""<!DOCTYPE html>
 <script>
 const D = __DATA_JSON__;
 
-// ── Auth ──────────────────────────────────────────────────────────────────
-const PASS = "__PASSWORD__";
-const AUTH_KEY = "kch_finance_auth";
-
-function checkAuth() {
-  const val = document.getElementById("pw-input").value;
-  if (val === PASS) {
-    sessionStorage.setItem(AUTH_KEY, "1");
-    showDashboard();
-  } else {
-    document.getElementById("auth-error").textContent = "ACCESS DENIED";
-    document.getElementById("pw-input").value = "";
-  }
-}
-
-document.getElementById("pw-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") checkAuth();
-});
-
-function showDashboard() {
-  document.getElementById("auth-gate").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-  renderDashboard();
-}
-
-if (sessionStorage.getItem(AUTH_KEY) === "1") showDashboard();
-
-// ── Render ────────────────────────────────────────────────────────────────
+renderDashboard();
 function renderDashboard() {
   const nw = D.net_worth;
   document.getElementById("nw-value").textContent = fmt(nw.total);
@@ -531,7 +458,7 @@ function fmt(n) {
 """
 
 
-def generate_dashboard(snap: dict, out_path: str = "index.html", password: str = "changeme") -> None:
+def generate_dashboard(snap: dict, out_path: str = "index.html") -> None:
     monthly_spending = _compute_monthly_spending(snap)
     portfolio        = _compute_portfolio(snap)
     nw               = snap["net_worth_summary"]
@@ -576,10 +503,9 @@ def generate_dashboard(snap: dict, out_path: str = "index.html", password: str =
 
     html = (
         _HTML_TEMPLATE
-        .replace("__DATA_JSON__",    json.dumps(dashboard_data, indent=2))
-        .replace("__UPDATED__",      snap["snapshot_date"])
-        .replace("__MONTH_LABEL__",  month_label)
-        .replace("__PASSWORD__",     password)
+        .replace("__DATA_JSON__",   json.dumps(dashboard_data, indent=2))
+        .replace("__UPDATED__",     snap["snapshot_date"])
+        .replace("__MONTH_LABEL__", month_label)
     )
 
     with open(out_path, "w") as f:
@@ -655,6 +581,5 @@ if __name__ == "__main__":
     if "--terminal" in sys.argv:
         show_terminal(snap)
     else:
-        password = os.getenv("DASHBOARD_PASSWORD", "changeme")
-        generate_dashboard(snap, password=password)
+        generate_dashboard(snap)
         print("Open index.html in a browser or deploy to Cloudflare Pages.")
