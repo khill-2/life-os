@@ -85,6 +85,10 @@ resp = notion.databases.query(database_id=DB_RECRUITING)
 notion.pages.update(page_id="<page-id>", archived=True)
 ```
 
+## Git rules
+
+- Never add `Co-Authored-By: Claude` or any AI co-author trailer to commits. Ever.
+
 ## Key behaviors to preserve
 
 - Script is idempotent — safe to re-run; dedup queries Notion before every insert.
