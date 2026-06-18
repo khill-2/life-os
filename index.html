@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KCH / OS</title>
+<title>Life OS</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
@@ -82,10 +82,14 @@ body {
 .hero-value {
   font-size: 64px; font-weight: 800; letter-spacing: -4px;
   color: var(--text); line-height: 1;
-  transition: filter 0.2s;
 }
-.hero-value.blurred { filter: blur(12px); cursor: pointer; user-select: none; }
-.hero-value.blurred:hover { filter: blur(0); }
+.nw-row { display: flex; align-items: center; gap: 16px; }
+.nw-toggle {
+  background: none; border: 1px solid var(--border2); color: var(--muted);
+  cursor: pointer; padding: 6px 8px; display: flex; align-items: center;
+  transition: color 0.1s, border-color 0.1s; flex-shrink: 0; margin-top: 4px;
+}
+.nw-toggle:hover { color: var(--text); border-color: var(--muted); }
 .hero-sub {
   margin-top: 14px; font-size: 12px; color: var(--muted);
   display: flex; gap: 28px; flex-wrap: wrap; letter-spacing: 0.3px;
@@ -205,7 +209,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 <body>
 
 <nav class="topnav">
-  <div class="logo"><span>KCH</span> / OS</div>
+  <div class="logo"><span>Life</span> OS</div>
   <button class="nav-tab active" onclick="showTab('finance')">Finance</button>
   <button class="nav-tab" onclick="showTab('recruiting')">Recruiting</button>
   <button class="nav-tab" onclick="showTab('school')">School</button>
@@ -217,7 +221,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 <div id="finance" class="section active">
   <div class="hero">
     <div class="hero-eyebrow">Total Net Worth</div>
-    <div class="hero-value" id="f-nw"></div>
+    <div class="nw-row">
+      <div class="hero-value" id="f-nw">$*****</div>
+      <button class="nw-toggle" id="nw-toggle" onclick="toggleNW()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
+    </div>
     <div class="hero-sub" id="f-nw-sub"></div>
   </div>
   <div class="grid-4" id="f-stats"></div>
@@ -498,13 +505,30 @@ function badge(text, color) {
   }
   const nw = F.net_worth;
   const nwEl = document.getElementById('f-nw');
-  nwEl.textContent = fmt(nw.total);
-  nwEl.classList.add('blurred');
-  nwEl.title = "Hover to reveal";
+  const _nwFmt = fmt(nw.total);
+  let _nwVisible = false;
   document.getElementById('f-nw-sub').innerHTML =
-    `<div>Liquid Cash <span>${fmt(nw.cash)}</span></div>` +
-    `<div>Taxable Investments <span>${fmt(nw.taxable)}</span></div>` +
-    `<div>Roth IRA <span>${fmt(nw.ira)}</span></div>`;
+    `<div>Liquid Cash <span id="f-nw-cash">*****</span></div>` +
+    `<div>Taxable Investments <span id="f-nw-taxable">*****</span></div>` +
+    `<div>Roth IRA <span id="f-nw-ira">*****</span></div>`;
+
+  window.toggleNW = function() {
+    _nwVisible = !_nwVisible;
+    const btn = document.getElementById('nw-toggle');
+    if (_nwVisible) {
+      nwEl.textContent = _nwFmt;
+      document.getElementById('f-nw-cash').textContent = fmt(nw.cash);
+      document.getElementById('f-nw-taxable').textContent = fmt(nw.taxable);
+      document.getElementById('f-nw-ira').textContent = fmt(nw.ira);
+      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    } else {
+      nwEl.textContent = "$*****";
+      document.getElementById("f-nw-cash").textContent = "*****";
+      document.getElementById("f-nw-taxable").textContent = "*****";
+      document.getElementById("f-nw-ira").textContent = "*****";
+      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    }
+  };
 
   const avgMo    = F.income.avg_monthly_net;
   const spend    = F.total_spend_latest;
@@ -531,7 +555,7 @@ function badge(text, color) {
   const latestSpend = F.monthly_spending[F.latest_month] || {};
   const pieLabels   = Object.keys(latestSpend);
   const pieData     = Object.values(latestSpend);
-  const pieColors   = pieLabels.map(l => F.category_colors[l] || "#94a3b8");
+  const pieColors   = pieLabels.map(l => F.category_colors[l] || "#666666");
 
   new Chart(document.getElementById("pieChart"), {
     type: "doughnut",
@@ -596,14 +620,14 @@ function badge(text, color) {
   document.getElementById('r-active').textContent = stats.active + " active";
   const subParts = Object.entries(stats.by_stage)
     .filter(([,v]) => v > 0)
-    .map(([s, v]) => `<span style="color:${colors[s]||'#8b949e'}">${v} ${s}</span>`);
+    .map(([s, v]) => `<span style="color:${colors[s]||'#666666'}">${v} ${s}</span>`);
   document.getElementById('r-sub').innerHTML = subParts.join('<span style="color:#3d444d;margin:0 4px">·</span>');
 
   // Stage summary cards
   const stagesToShow = ["Applied", "Phone Screen", "OA", "Interview"];
   const sg = document.getElementById('r-stage-cards');
   stagesToShow.forEach(s => {
-    const c = colors[s] || "#8b949e";
+    const c = colors[s] || "#666666";
     sg.innerHTML += `<div class="stat-card" style="border-top:2px solid ${c}22">
       <div class="stat-label" style="color:${c}">${s}</div>
       <div class="stat-value">${stats.by_stage[s] || 0}</div>
@@ -615,7 +639,7 @@ function badge(text, color) {
   const filters = document.getElementById('r-filters');
   const allStages = ["All", ...Object.keys(stats.by_stage).filter(s => stats.by_stage[s] > 0)];
   allStages.forEach(s => {
-    const c = s === "All" ? "#4a9eff" : (colors[s] || "#8b949e");
+    const c = s === "All" ? "#ffffff" : (colors[s] || "#666666");
     const btn = document.createElement('button');
     btn.className = "stage-btn" + (s === "All" ? " active" : "");
     btn.style.cssText = s === "All" ? `background:${c};color:#000;border-color:${c}` : "";
@@ -631,7 +655,7 @@ function badge(text, color) {
       b.style.cssText = "";
     });
     event.currentTarget.classList.add('active');
-    const c = stage === "All" ? "#4a9eff" : (colors[stage] || "#4a9eff");
+    const c = stage === "All" ? "#ffffff" : (colors[stage] || "#ffffff");
     event.currentTarget.style.cssText = `background:${c};color:#000;border-color:${c}`;
     renderTable();
   }
@@ -642,21 +666,21 @@ function badge(text, color) {
     const tbl = document.getElementById('r-table');
 
     if (!filtered.length) {
-      tbl.innerHTML = `<tr><td colspan="5" style="padding:40px;text-align:center;color:#8b949e">
-        ${entries.length === 0 ? 'No entries — run <code style="color:#4a9eff">python main.py</code> to sync from Gmail' : 'No entries for this stage'}
+      tbl.innerHTML = `<tr><td colspan="5" style="padding:40px;text-align:center;color:var(--muted)">
+        ${entries.length === 0 ? 'No entries — run <code style="color:var(--muted)">python main.py</code> to sync from Gmail' : 'No entries for this stage'}
       </td></tr>`;
       return;
     }
 
     tbl.innerHTML = `<tr><th>Company</th><th>Role</th><th>Stage</th><th>Last Contact</th><th>Next Action</th></tr>`;
     filtered.forEach(e => {
-      const c = colors[e.stage] || "#8b949e";
+      const c = colors[e.stage] || "#666666";
       tbl.innerHTML += `<tr>
         <td style="font-weight:700">${e.company}</td>
-        <td style="color:#8b949e">${e.role || "—"}</td>
+        <td style="color:var(--muted)">${e.role || "—"}</td>
         <td>${badge(e.stage, c)}</td>
-        <td class="mono" style="color:#8b949e">${e.last_contact || "—"}</td>
-        <td style="color:#8b949e;font-size:12px">${e.next_action || "—"}</td>
+        <td class="mono" style="color:var(--muted)">${e.last_contact || "—"}</td>
+        <td style="color:var(--muted);font-size:12px">${e.next_action || "—"}</td>
       </tr>`;
     });
   }
@@ -697,13 +721,13 @@ function badge(text, color) {
   entries.forEach(e => {
     const diff = e.due_date ? Math.round((new Date(e.due_date) - new Date(today)) / 86400000) : null;
     const overdue = diff !== null && diff < 0 && e.status !== "Complete";
-    const c = statusColor[e.status] || "#8b949e";
+    const c = statusColor[e.status] || "#666666";
     tbl.innerHTML += `<tr class="${overdue ? 'urgent' : ''}">
       <td style="font-weight:600">${e.assignment}</td>
       <td><span class="tag">${e.course || "—"}</span></td>
-      <td class="mono" style="color:${overdue ? '#f85149' : '#8b949e'}">${relDate(e.due_date)}</td>
+      <td class="mono" style="color:${overdue ? '#f85149' : 'var(--muted)'}">${relDate(e.due_date)}</td>
       <td>${badge(e.status, c)}</td>
-      <td style="color:#8b949e;font-size:12px">${e.notes ? e.notes.substring(0, 60) + (e.notes.length > 60 ? '…' : '') : '—'}</td>
+      <td style="color:var(--muted);font-size:12px">${e.notes ? e.notes.substring(0, 60) + (e.notes.length > 60 ? '…' : '') : '—'}</td>
     </tr>`;
   });
 })();
@@ -759,7 +783,7 @@ function badge(text, color) {
     tbl.innerHTML += `<tr>
       <td class="mono">${e.date}</td>
       <td>${w}</td>
-      <td style="color:#8b949e">${e.workout_type || "—"}</td>
+      <td style="color:var(--muted)">${e.workout_type || "—"}</td>
       <td>${a}</td>
     </tr>`;
   });
