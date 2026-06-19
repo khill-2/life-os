@@ -104,33 +104,4 @@ def write_school(entries: list[dict], dry_run: bool = False) -> tuple[int, int]:
 
 
 def write_health_backfill(dry_run: bool = False) -> tuple[int, int]:
-    existing       = _load("health.json")
-    existing_dates = {e["date"] for e in existing}
-    added = skipped = 0
-
-    today = date.today()
-    for offset in range(14):
-        target = today - timedelta(days=offset)
-        iso = target.isoformat()
-        if iso in existing_dates:
-            skipped += 1
-            continue
-        if dry_run:
-            print(f"  [DRY RUN] Health: {iso}")
-            added += 1
-            continue
-        existing.append({
-            "id":           str(uuid.uuid4()),
-            "date":         iso,
-            "worked_out":   False,
-            "workout_type": "",
-            "ate_well":     False,
-            "notes":        "",
-        })
-        existing_dates.add(iso)
-        added += 1
-
-    if not dry_run:
-        existing.sort(key=lambda e: e["date"], reverse=True)
-        _save("health.json", existing)
-    return added, skipped
+    return 0, 0
