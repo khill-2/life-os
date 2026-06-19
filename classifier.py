@@ -234,12 +234,14 @@ def classify_recruiting(email: dict) -> Optional[dict]:
     # Awareness = mentions a role/program but could be cold outreach
     awareness_keywords = [
         "internship", "intern", "sde intern", "your application",
-        "software engineer intern", "new grad",
+        "software engineer intern", "new grad", "thanks for your interest",
+        "thank you for your interest", "we received your resume",
     ]
 
     from_target     = root.lower() in TARGET_COMPANIES
+    snippet_lower   = snippet.lower()
     has_actionable  = any(kw in subject_lower for kw in actionable_keywords)
-    has_awareness   = any(kw in subject_lower for kw in awareness_keywords)
+    has_awareness   = any(kw in subject_lower or kw in snippet_lower for kw in awareness_keywords)
 
     # Target companies: awareness signal is enough (we want all touchpoints from Google, etc.)
     # Unknown companies: must have an actionable signal — cold outreach with just "internship" in
