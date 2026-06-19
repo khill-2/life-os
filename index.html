@@ -13,7 +13,7 @@
   --border:  #242424;
   --border2: #2e2e2e;
   --text:    #f5f5f5;
-  --muted:   #666666;
+  --muted:   #999999;
   --muted2:  #444444;
   --accent:  #ffffff;
   --pos:     #e5e5e5;
@@ -684,16 +684,40 @@ function badge(text, color) {
       return;
     }
 
-    tbl.innerHTML = `<tr><th>Company</th><th>Role</th><th>Stage</th><th>Last Contact</th><th>Next Action</th></tr>`;
+    tbl.innerHTML = `<tr><th>Company</th><th>Role</th><th>Stage</th><th>Last Contact</th><th>Notes</th></tr>`;
     filtered.forEach(e => {
-      const c = colors[e.stage] || "#666666";
-      tbl.innerHTML += `<tr>
+      const c      = colors[e.stage] || "#666666";
+      const noteKey = `note:${e.company}:${e.role}`;
+      const saved   = localStorage.getItem(noteKey) || "";
+      const row = document.createElement('tr');
+      row.innerHTML = `
         <td style="font-weight:700">${e.company}</td>
         <td style="color:var(--muted)">${e.role || "—"}</td>
         <td>${badge(e.stage, c)}</td>
         <td class="mono" style="color:var(--muted)">${e.last_contact || "—"}</td>
-        <td style="color:var(--muted);font-size:12px">${e.next_action || "—"}</td>
-      </tr>`;
+        <td></td>`;
+      const noteCell = row.querySelector('td:last-child');
+      const span = document.createElement('span');
+      span.textContent = saved || "—";
+      span.style.cssText = "color:var(--muted);font-size:12px;cursor:pointer";
+      span.title = "Click to edit";
+      span.onclick = () => {
+        const input = document.createElement('input');
+        input.value = saved;
+        input.style.cssText = "background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-size:12px;width:100%;outline:none";
+        noteCell.replaceChildren(input);
+        input.focus();
+        input.onblur = () => {
+          const val = input.value.trim();
+          if (val) localStorage.setItem(noteKey, val);
+          else localStorage.removeItem(noteKey);
+          span.textContent = val || "—";
+          noteCell.replaceChildren(span);
+        };
+        input.onkeydown = e => { if (e.key === "Enter") input.blur(); };
+      };
+      noteCell.appendChild(span);
+      tbl.appendChild(row);
     });
   }
 
