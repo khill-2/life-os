@@ -16,9 +16,10 @@ SEEDED_RECRUITING = {"amazon", "spacex", "microsoft", "hpe", "notion"}
 # Gmail search queries per category
 GMAIL_QUERIES = {
     "recruiting": (
-        "internship OR interview OR application OR offer OR OA OR "
-        '"online assessment" OR hiring OR recruiter OR "thank you for applying" OR '
-        '"next steps" OR "coding challenge"'
+        'category:primary (internship OR interview OR "online assessment" OR '
+        '"coding challenge" OR "thank you for applying" OR "thanks for your interest" OR '
+        '"thanks for applying" OR "we received your application" OR "we received your resume" OR '
+        '"next steps" OR "offer letter" OR recruiter OR "phone screen")'
     ),
     "finance": (
         "paycheck OR \"direct deposit\" OR statement OR \"bill due\" OR "
@@ -32,7 +33,7 @@ GMAIL_QUERIES = {
 }
 
 # Max emails to fetch per query (keeps runtime bounded)
-MAX_RESULTS_PER_QUERY = 50
+MAX_RESULTS_PER_QUERY = 200
 
 # Recruiting stage inference keywords (checked in order — first match wins)
 STAGE_KEYWORDS = [
