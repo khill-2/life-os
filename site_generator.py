@@ -772,7 +772,7 @@ function badge(text, color) {
     filtered.forEach(e => {
       const c      = colors[e.stage] || "#666666";
       const noteKey = `note:${e.company}:${e.role}`;
-      const saved   = localStorage.getItem(noteKey) || "";
+      const saved   = localStorage.getItem(noteKey) || e.notes || "";
       const row = document.createElement('tr');
       row.innerHTML = `
         <td style="font-weight:700">${e.company}</td>
