@@ -650,7 +650,7 @@ function badge(text, color) {
 
 // ── Flip-reveal (stock ticker scramble) ───────────────────────
 function flipReveal(el, target, ms) {
-  const ch = '0123456789', frames = Math.floor((ms || 500) / 28);
+  const ch = '0123456789', frames = Math.floor((ms || 500) / 55);
   let f = 0, n = (target.match(/\d/g) || []).length;
   clearInterval(el._flip);
   el._flip = setInterval(() => {
@@ -660,10 +660,10 @@ function flipReveal(el, target, ms) {
     el.textContent = target.replace(/\d/g, d =>
       (f / frames) > (i++ / n) * 0.7 + 0.3 ? d : ch[Math.random() * 10 | 0]
     );
-  }, 28);
+  }, 55);
 }
 function flipHide(el, target, ms) {
-  const ch = '0123456789', frames = Math.floor((ms || 280) / 28);
+  const ch = '0123456789', frames = Math.floor((ms || 280) / 55);
   const hidden = target.replace(/\d/g, '–');
   let f = 0;
   clearInterval(el._flip);
@@ -672,7 +672,7 @@ function flipHide(el, target, ms) {
     f++;
     if (f >= frames) { el.textContent = hidden; clearInterval(el._flip); return; }
     el.textContent = target.replace(/\d/g, () => ch[Math.random() * 10 | 0]);
-  }, 28);
+  }, 55);
 }
 
 // ── Finance ───────────────────────────────────────────────────
@@ -701,16 +701,16 @@ function flipHide(el, target, ms) {
     _nwVisible = !_nwVisible;
     const btn = document.getElementById('nw-toggle');
     if (_nwVisible) {
-      flipReveal(nwEl,                                          _nwFmt,   620);
-      flipReveal(document.getElementById('f-nw-cash'),         _cashFmt, 500);
-      flipReveal(document.getElementById('f-nw-taxable'),      _taxFmt,  500);
-      flipReveal(document.getElementById('f-nw-ira'),          _iraFmt,  500);
+      flipReveal(nwEl,                                          _nwFmt,   1400);
+      flipReveal(document.getElementById('f-nw-cash'),         _cashFmt, 1100);
+      flipReveal(document.getElementById('f-nw-taxable'),      _taxFmt,  1100);
+      flipReveal(document.getElementById('f-nw-ira'),          _iraFmt,  1100);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
     } else {
-      flipHide(nwEl,                                          _nwFmt,   320);
-      flipHide(document.getElementById('f-nw-cash'),         _cashFmt, 260);
-      flipHide(document.getElementById('f-nw-taxable'),      _taxFmt,  260);
-      flipHide(document.getElementById('f-nw-ira'),          _iraFmt,  260);
+      flipHide(nwEl,                                          _nwFmt,   700);
+      flipHide(document.getElementById('f-nw-cash'),         _cashFmt, 550);
+      flipHide(document.getElementById('f-nw-taxable'),      _taxFmt,  550);
+      flipHide(document.getElementById('f-nw-ira'),          _iraFmt,  550);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
     }
   };
