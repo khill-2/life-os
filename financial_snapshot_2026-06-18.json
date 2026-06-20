@@ -258,6 +258,11 @@
       "available_credit": 6474.01,
       "last_statement_balance": 0.00,
       "account_note": "NEW CARD — signup bonus: spend $5,000 by 2026-09-07 for 75,000 Ultimate Rewards points. Only $115.07 spent, $4,884.93 remaining to hit bonus.",
+      "signup_bonus": {
+        "spend_goal": 5000,
+        "spend_by": "2026-09-07",
+        "points": 75000
+      },
       "autopay_scheduled": "2026-08-03",
       "transactions": [
         { "date": "2026-06-13", "post_date": "2026-06-15", "description": "ARMK ORACLE PARK F&B", "category": "Food & Drink", "amount": -8.85 },
@@ -438,6 +443,10 @@
       "note": "Periodic transfers to USAA Federal Savings Bank — could be car insurance or other recurring obligation",
       "recent_amounts": [-200.00, -600.00, -50.00, -240.00, -176.00, 250.00, 1500.00]
     }
+  },
+  "investment_goals": {
+    "roth_ira_2026_contributed": 0,
+    "monthly_brokerage_target": 3000
   },
   "agent_upload_notes": {
     "schema_tbd": true,

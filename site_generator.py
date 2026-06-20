@@ -188,6 +188,44 @@ def _compute_recruiting_stats(entries: list) -> dict:
         "active":   sum(counts[s] for s in stage_order if s not in ("Closed",)),
     }
 
+# ── Investment goals ─────────────────────────────────────────────────────────
+
+def _compute_investment_goals(snap: dict) -> dict:
+    year = snap["snapshot_date"][:4]
+
+    buys = [
+        tx for tx in snap["accounts"]["schwab_brokerage"].get("transactions_ytd", [])
+        if tx.get("action") == "Buy" and tx.get("date", "").startswith(year)
+    ]
+    taxable_ytd = round(sum(abs(tx["amount"]) for tx in buys), 2)
+
+    chase_acct  = snap["accounts"]["chase_sapphire_preferred"]
+    chase_txs   = chase_acct.get("transactions", [])
+    chase_spent = round(sum(abs(tx["amount"]) for tx in chase_txs), 2)
+    bonus_raw   = chase_acct.get("signup_bonus", {})
+    chase_bonus: dict = {}
+    if bonus_raw:
+        chase_bonus = {
+            "spend_goal":    bonus_raw["spend_goal"],
+            "spend_by":      bonus_raw["spend_by"],
+            "points":        bonus_raw.get("points", 75000),
+            "current_spend": chase_spent,
+        }
+
+    goals = snap.get("investment_goals", {})
+    return {
+        "roth_ira": {
+            "contributed": goals.get("roth_ira_2026_contributed", 0),
+            "limit":       7000,
+        },
+        "brokerage": {
+            "invested_ytd":   taxable_ytd,
+            "monthly_target": goals.get("monthly_brokerage_target", 3000),
+        },
+        "chase_bonus": chase_bonus,
+    }
+
+
 # ── Site data assembly ────────────────────────────────────────────────────────
 
 def build_site_data() -> dict:
@@ -230,6 +268,7 @@ def build_site_data() -> dict:
             "total_spend_latest": round(sum(latest_spend.values()), 2),
             "portfolio":          portfolio,
             "category_colors":    CATEGORY_COLORS,
+            "investment_goals":   _compute_investment_goals(snap),
         }
 
     month_label = ""
@@ -461,6 +500,20 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .health-day .day-icons { display: flex; gap: 4px; justify-content: center; font-size: 13px; }
 .health-day.today { border-color: var(--border2); background: var(--surface2); }
 .health-day.today .day-date { color: var(--accent); }
+/* ── Investment Goals ───────────────────────────────────────── */
+.invest-row { padding: 20px 22px; border-bottom: 1px solid var(--border); }
+.invest-row:last-child { border-bottom: none; }
+.invest-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.invest-name { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.invest-amt { font-size: 20px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.invest-amt .of { color: var(--muted); font-size: 13px; font-weight: 400; margin-left: 4px; }
+.invest-track { height: 2px; background: var(--border2); margin-bottom: 10px; }
+.invest-fill { height: 2px; background: var(--text); }
+.invest-meta { font-size: 11px; color: var(--muted); display: flex; gap: 24px; flex-wrap: wrap; }
+.invest-meta span { color: var(--text); }
+/* ── Health icons ───────────────────────────────────────────── */
+.h-on  { color: var(--text); font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+.h-off { color: var(--muted2); font-size: 10px; }
 /* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
@@ -507,6 +560,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <div class="panel">
     <div class="panel-header">Investment Portfolio</div>
     <table id="f-portfolio"></table>
+  </div>
+  <div class="panel" id="f-invest-panel" style="display:none">
+    <div class="panel-header">2026 Investment Goals</div>
+    <div id="f-invest-body"></div>
   </div>
 </div>
 
@@ -591,6 +648,33 @@ function badge(text, color) {
   return `<span class="badge" style="background:${color}22;color:${color};border:1px solid ${color}44">${text}</span>`;
 }
 
+// ── Flip-reveal (stock ticker scramble) ───────────────────────
+function flipReveal(el, target, ms) {
+  const ch = '0123456789', frames = Math.floor((ms || 500) / 28);
+  let f = 0, n = (target.match(/\d/g) || []).length;
+  clearInterval(el._flip);
+  el._flip = setInterval(() => {
+    f++;
+    if (f >= frames) { el.textContent = target; clearInterval(el._flip); return; }
+    let i = 0;
+    el.textContent = target.replace(/\d/g, d =>
+      (f / frames) > (i++ / n) * 0.7 + 0.3 ? d : ch[Math.random() * 10 | 0]
+    );
+  }, 28);
+}
+function flipHide(el, target, ms) {
+  const ch = '0123456789', frames = Math.floor((ms || 280) / 28);
+  const hidden = target.replace(/\d/g, '–');
+  let f = 0;
+  clearInterval(el._flip);
+  el.textContent = target.replace(/\d/g, () => ch[Math.random() * 10 | 0]);
+  el._flip = setInterval(() => {
+    f++;
+    if (f >= frames) { el.textContent = hidden; clearInterval(el._flip); return; }
+    el.textContent = target.replace(/\d/g, () => ch[Math.random() * 10 | 0]);
+  }, 28);
+}
+
 // ── Finance ───────────────────────────────────────────────────
 (function renderFinance() {
   const F = D.finance;
@@ -600,28 +684,33 @@ function badge(text, color) {
     return;
   }
   const nw = F.net_worth;
-  const nwEl = document.getElementById('f-nw');
-  const _nwFmt = fmt(nw.total);
+  const nwEl    = document.getElementById('f-nw');
+  const _nwFmt   = fmt(nw.total);
+  const _cashFmt = fmt(nw.cash);
+  const _taxFmt  = fmt(nw.taxable);
+  const _iraFmt  = fmt(nw.ira);
   let _nwVisible = false;
+
+  nwEl.textContent = _nwFmt.replace(/\d/g, '–');
   document.getElementById('f-nw-sub').innerHTML =
-    `<div>Liquid Cash <span id="f-nw-cash">*****</span></div>` +
-    `<div>Taxable Investments <span id="f-nw-taxable">*****</span></div>` +
-    `<div>Roth IRA <span id="f-nw-ira">*****</span></div>`;
+    `<div>Liquid Cash <span id="f-nw-cash">${_cashFmt.replace(/\d/g,'–')}</span></div>` +
+    `<div>Taxable Investments <span id="f-nw-taxable">${_taxFmt.replace(/\d/g,'–')}</span></div>` +
+    `<div>Roth IRA <span id="f-nw-ira">${_iraFmt.replace(/\d/g,'–')}</span></div>`;
 
   window.toggleNW = function() {
     _nwVisible = !_nwVisible;
     const btn = document.getElementById('nw-toggle');
     if (_nwVisible) {
-      nwEl.textContent = _nwFmt;
-      document.getElementById('f-nw-cash').textContent = fmt(nw.cash);
-      document.getElementById('f-nw-taxable').textContent = fmt(nw.taxable);
-      document.getElementById('f-nw-ira').textContent = fmt(nw.ira);
+      flipReveal(nwEl,                                          _nwFmt,   620);
+      flipReveal(document.getElementById('f-nw-cash'),         _cashFmt, 500);
+      flipReveal(document.getElementById('f-nw-taxable'),      _taxFmt,  500);
+      flipReveal(document.getElementById('f-nw-ira'),          _iraFmt,  500);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
     } else {
-      nwEl.textContent = "$*****";
-      document.getElementById("f-nw-cash").textContent = "*****";
-      document.getElementById("f-nw-taxable").textContent = "*****";
-      document.getElementById("f-nw-ira").textContent = "*****";
+      flipHide(nwEl,                                          _nwFmt,   320);
+      flipHide(document.getElementById('f-nw-cash'),         _cashFmt, 260);
+      flipHide(document.getElementById('f-nw-taxable'),      _taxFmt,  260);
+      flipHide(document.getElementById('f-nw-ira'),          _iraFmt,  260);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
     }
   };
@@ -703,6 +792,77 @@ function badge(text, color) {
     <td style="text-align:right" class="pos">+${fmt(F.portfolio.total_gain)}</td>
     <td></td>
   </tr>`;
+
+  // ── Investment Goals ───────────────────────────────────────
+  const IG = F.investment_goals;
+  if (IG) {
+    document.getElementById('f-invest-panel').style.display = '';
+    const today      = new Date();
+    const fullMonths = 12 - (today.getMonth() + 1); // full calendar months after current
+
+    // Roth IRA
+    const rothLimit    = IG.roth_ira.limit;
+    const rothDone     = IG.roth_ira.contributed;
+    const rothLeft     = rothLimit - rothDone;
+    const rothMonthly  = fullMonths > 0 ? rothLeft / fullMonths : rothLeft;
+    const rothPct      = Math.min(100, Math.round(rothDone / rothLimit * 100));
+
+    // Taxable brokerage
+    const broYTD       = IG.brokerage.invested_ytd;
+    const broTarget    = IG.brokerage.monthly_target;
+    const monthsIn     = today.getMonth() + today.getDate() / 31;
+    const broPace      = monthsIn > 0 ? Math.round(broYTD / monthsIn) : 0;
+
+    // Chase bonus
+    let chaseHtml = '';
+    const CB = IG.chase_bonus;
+    if (CB && CB.spend_goal) {
+      const deadline    = new Date(CB.spend_by + 'T00:00:00');
+      const daysLeft    = Math.max(0, Math.round((deadline - today) / 86400000));
+      const chaseLeft   = CB.spend_goal - CB.current_spend;
+      const dailyNeeded = daysLeft > 0 ? chaseLeft / daysLeft : chaseLeft;
+      const chasePct    = Math.min(100, Math.round(CB.current_spend / CB.spend_goal * 100));
+      chaseHtml = `<div class="invest-row">
+        <div class="invest-top">
+          <div class="invest-name">Chase Sapphire — Signup Bonus</div>
+          <div class="invest-amt">${fmt(CB.current_spend)}<span class="of">of ${fmt(CB.spend_goal)}</span></div>
+        </div>
+        <div class="invest-track"><div class="invest-fill" style="width:${chasePct}%"></div></div>
+        <div class="invest-meta">
+          <div>Deadline <span>${CB.spend_by}</span></div>
+          <div><span>${daysLeft}d</span> remaining</div>
+          <div>Need <span>${fmt(chaseLeft)}</span> more · <span>${fmt(dailyNeeded)}/day</span></div>
+          <div><span>${(CB.points||0).toLocaleString()} UR pts</span> on completion</div>
+        </div>
+      </div>`;
+    }
+
+    document.getElementById('f-invest-body').innerHTML = `
+      <div class="invest-row">
+        <div class="invest-top">
+          <div class="invest-name">Roth IRA — 2026</div>
+          <div class="invest-amt">${fmt(rothDone)}<span class="of">of ${fmt(rothLimit)}</span></div>
+        </div>
+        <div class="invest-track"><div class="invest-fill" style="width:${rothPct}%"></div></div>
+        <div class="invest-meta">
+          <div><span>${fmt(rothLeft)}</span> remaining</div>
+          <div><span>${fmt(Math.round(rothMonthly))}/mo</span> to max by Dec</div>
+          <div><span>${fullMonths}</span> full months left</div>
+        </div>
+      </div>
+      <div class="invest-row">
+        <div class="invest-top">
+          <div class="invest-name">Taxable Brokerage — YTD</div>
+          <div class="invest-amt">${fmt(broYTD)}</div>
+        </div>
+        <div class="invest-meta">
+          <div>Target <span>${fmt(broTarget)}/mo</span></div>
+          <div>Pace <span>${fmt(broPace)}/mo</span> YTD avg</div>
+        </div>
+      </div>
+      ${chaseHtml}
+    `;
+  }
 })();
 
 // ── Recruiting ────────────────────────────────────────────────
@@ -882,12 +1042,12 @@ function badge(text, color) {
     const lbl = d.toLocaleString("en-US", { weekday: "short" }).toUpperCase();
     const num = d.getDate();
     const isToday = iso === today;
-    const w   = e?.worked_out ? "💪" : "·";
-    const a   = e?.ate_well   ? "🥗" : "·";
+    const w = e?.worked_out ? `<span class="h-on" title="Worked out">W</span>` : `<span class="h-off" title="No workout">·</span>`;
+    const a = e?.ate_well   ? `<span class="h-on" title="Ate well">A</span>`   : `<span class="h-off" title="Didn't eat well">·</span>`;
     grid.innerHTML += `<div class="health-day${isToday ? ' today' : ''}">
       <div class="day-label">${lbl}</div>
       <div class="day-date">${num}</div>
-      <div class="day-icons"><span title="Workout">${w}</span><span title="Ate well">${a}</span></div>
+      <div class="day-icons">${w}${a}</div>
     </div>`;
   });
 
