@@ -359,7 +359,7 @@ body {
   margin-right: 4px;
   white-space: nowrap;
 }
-.logo span { color: var(--text); }
+.logo span { color: var(--muted); }
 .nav-tab {
   background: none;
   border: none;
@@ -529,7 +529,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 <body>
 
 <nav class="topnav">
-  <div class="logo"><span>Life</span> OS</div>
+  <div class="logo"><span>K.</span> Hill</div>
   <button class="nav-tab active" onclick="showTab('finance')">Finance</button>
   <button class="nav-tab" onclick="showTab('recruiting')">Recruiting</button>
   <button class="nav-tab" onclick="showTab('school')">School</button>
