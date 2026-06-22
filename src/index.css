@@ -11,6 +11,7 @@
   --pos:     #e5e5e5;
   --neg:     #666666;
   --amber:   #aaaaaa;
+  --red:     #f85149;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -46,7 +47,7 @@ body {
   margin-right: 4px;
   white-space: nowrap;
 }
-.logo span { color: var(--text); }
+.logo span { color: var(--muted); }
 .nav-tab {
   background: none;
   border: none;

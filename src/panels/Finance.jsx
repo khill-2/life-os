@@ -24,6 +24,7 @@ export default function Finance({ data }) {
   const cashRef    = useRef(null)
   const taxableRef = useRef(null)
   const iraRef     = useRef(null)
+  const liabRef    = useRef(null)
   const pieRef     = useRef(null)
   const barRef     = useRef(null)
   const mounted    = useRef(false)
@@ -44,20 +45,23 @@ export default function Finance({ data }) {
   const cashFmt    = fmt(nw.cash)
   const taxableFmt = fmt(nw.taxable)
   const iraFmt     = fmt(nw.ira)
+  const liabFmt    = fmt(nw.liabilities || 0)
 
   // Flip animation on toggle
   useLayoutEffect(() => {
     if (!mounted.current) { mounted.current = true; return }
     if (visible) {
-      flipReveal(nwRef.current,      nwFmt,      1400)
-      flipReveal(cashRef.current,    cashFmt,    1100)
-      flipReveal(taxableRef.current, taxableFmt, 1100)
-      flipReveal(iraRef.current,     iraFmt,     1100)
+      flipReveal(nwRef.current,      nwFmt,           1400)
+      flipReveal(cashRef.current,    cashFmt,         1100)
+      flipReveal(taxableRef.current, taxableFmt,      1100)
+      flipReveal(iraRef.current,     iraFmt,          1100)
+      flipReveal(liabRef.current,    '−' + liabFmt,  1100)
     } else {
-      flipHide(nwRef.current,      nwFmt,      700)
-      flipHide(cashRef.current,    cashFmt,    550)
-      flipHide(taxableRef.current, taxableFmt, 550)
-      flipHide(iraRef.current,     iraFmt,     550)
+      flipHide(nwRef.current,      nwFmt,          700)
+      flipHide(cashRef.current,    cashFmt,        550)
+      flipHide(taxableRef.current, taxableFmt,     550)
+      flipHide(iraRef.current,     iraFmt,         550)
+      flipHide(liabRef.current,    '−' + liabFmt, 550)
     }
   }, [visible])
 
@@ -138,6 +142,9 @@ export default function Finance({ data }) {
           <div>Liquid Cash <span ref={cashRef}>{hide(cashFmt)}</span></div>
           <div>Taxable Investments <span ref={taxableRef}>{hide(taxableFmt)}</span></div>
           <div>Roth IRA <span ref={iraRef}>{hide(iraFmt)}</span></div>
+          {nw.liabilities > 0 && (
+            <div style={{ color: 'var(--red)' }}>Liabilities <span ref={liabRef}>{hide('−' + liabFmt)}</span></div>
+          )}
         </div>
       </div>
 
