@@ -34,6 +34,20 @@ python main.py --dry-run --since 7 --accounts personal
 
 First run for each account triggers a browser OAuth flow and writes a token file. Subsequent runs use cached tokens.
 
+## Refreshing the finance dashboard
+
+```bash
+# Step 1 — open all bank sites at once
+venv/bin/python main.py --csv-open
+
+# Step 2 — download CSVs from each bank (no need to move them, script finds them in ~/Downloads)
+
+# Step 3 — parse and regenerate
+venv/bin/python main.py --csv
+```
+
+Supported accounts: Capital One Checking (2657), Capital One Savings (2125), Discover It, Chase Sapphire Preferred, Schwab Custodial Brokerage, Fidelity Roth IRA. Missing CSVs keep their last-known values from the previous snapshot.
+
 ## Required credentials
 
 | File | Purpose |

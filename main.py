@@ -12,7 +12,11 @@ Usage:
 """
 
 import argparse
+import glob
+import json
+import os
 import sys
+import webbrowser
 
 from config import GMAIL_QUERIES, MAX_RESULTS_PER_QUERY
 from gmail_scraper import fetch_emails, ACCOUNTS
@@ -30,6 +34,8 @@ def parse_args():
                    help=f"Which accounts to scrape (default: all). Choices: {list(ACCOUNTS)}")
     p.add_argument("--no-health", action="store_true", help="Skip Health Log backfill.")
     p.add_argument("--dashboard", action="store_true", help="Print terminal finance dashboard and exit.")
+    p.add_argument("--csv",       action="store_true", help="Parse CSV exports from csv_imports/ and regenerate finance dashboard.")
+    p.add_argument("--csv-open",  action="store_true", help="Open each bank's download page in the browser, then exit.")
     return p.parse_args()
 
 
@@ -61,6 +67,27 @@ def main():
     if args.dashboard:
         from site_generator import show_terminal_finance
         show_terminal_finance()
+        return
+
+    if args.csv_open:
+        from csv_scraper import open_bank_sites
+        open_bank_sites()
+        return
+
+    if args.csv:
+        from csv_scraper import generate_snapshot, save_snapshot
+        print("Parsing CSV exports from csv_imports/...")
+        existing_snap = {}
+        existing_files = sorted(glob.glob("financial_snapshot_*.json"))
+        if existing_files:
+            with open(existing_files[-1]) as f:
+                existing_snap = json.load(f)
+        snap = generate_snapshot(existing_snap)
+        filename = save_snapshot(snap)
+        print(f"\nSaved → {filename}")
+        print("Regenerating site...")
+        generate_site()
+        webbrowser.open("file://" + os.path.abspath("index.html"))
         return
 
     # Validate requested accounts
@@ -148,6 +175,7 @@ def main():
     # Regenerate site after every sync
     print("\nRegenerating site...")
     generate_site()
+    webbrowser.open("file://" + os.path.abspath("index.html"))
 
 
 if __name__ == "__main__":

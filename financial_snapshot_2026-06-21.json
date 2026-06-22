@@ -1,0 +1,695 @@
+{
+  "snapshot_date": "2026-06-21",
+  "owner": "Keller C. Hill",
+  "net_worth_summary": {
+    "total_assets": 51395.16,
+    "total_liabilities": 885.06,
+    "true_net_worth": 50510.1,
+    "liquid_cash": 10421.14,
+    "taxable_investments": 37669.18,
+    "tax_advantaged_investments": 3304.84
+  },
+  "accounts": {
+    "capital_one_checking": {
+      "name": "360 Checking",
+      "last4": "2657",
+      "institution": "Capital One",
+      "type": "checking",
+      "balance": 128.38,
+      "balance_date": "2026-06-18",
+      "transactions": [
+        {
+          "date": "2026-06-16",
+          "description": "Digital Card Purchase - KALSHI 2014640952 NY",
+          "category": "Transfer",
+          "amount": -40.0
+        },
+        {
+          "date": "2026-06-16",
+          "description": "Digital Card Purchase - KALSHI 2014640952 NY",
+          "category": "Transfer",
+          "amount": -10.21
+        },
+        {
+          "date": "2026-06-15",
+          "description": "Withdrawal from SCHWAB BROKERAGE MONEYLINK",
+          "category": "Transfer",
+          "amount": -4500.0
+        },
+        {
+          "date": "2026-06-11",
+          "description": "Deposit from 360 Performance Savings XXXXXXX2125",
+          "category": "Transfer",
+          "amount": 4500.0
+        },
+        {
+          "date": "2026-06-11",
+          "description": "Withdrawal from EMBARC REDWOOD C PURCHASE",
+          "category": "Transfer",
+          "amount": -45.54
+        },
+        {
+          "date": "2026-06-11",
+          "description": "Withdrawal from SCHWAB BROKERAGE MONEYLINK",
+          "category": "Transfer",
+          "amount": -3000.0
+        },
+        {
+          "date": "2026-06-10",
+          "description": "Zelle money sent to THOMAS SCOTT",
+          "category": "Transfer",
+          "amount": -100.0
+        },
+        {
+          "date": "2026-06-10",
+          "description": "Deposit from 360 Performance Savings XXXXXXX2125",
+          "category": "Transfer",
+          "amount": 3000.0
+        },
+        {
+          "date": "2026-06-10",
+          "description": "Preauthorized Withdrawal to USAA FEDERAL SAVINGS BANK savings account XXXXXX6355",
+          "category": "Transfer",
+          "amount": -200.0
+        },
+        {
+          "date": "2026-06-02",
+          "description": "Preauthorized Withdrawal to USAA FEDERAL SAVINGS BANK savings account XXXXXX6355",
+          "category": "Transfer",
+          "amount": -600.0
+        },
+        {
+          "date": "2026-05-31",
+          "description": "Monthly Interest Paid",
+          "category": "Transfer",
+          "amount": 0.12
+        },
+        {
+          "date": "2026-05-29",
+          "description": "Preauthorized Withdrawal to USAA FEDERAL SAVINGS BANK savings account XXXXXX6355",
+          "category": "Transfer",
+          "amount": -50.0
+        },
+        {
+          "date": "2026-05-26",
+          "description": "Withdrawal from EMBARC REDWOOD C PURCHASE",
+          "category": "Transfer",
+          "amount": -77.6
+        },
+        {
+          "date": "2026-05-22",
+          "description": "Preauthorized Withdrawal to USAA FEDERAL SAVINGS BANK savings account XXXXXX6355",
+          "category": "Transfer",
+          "amount": -240.0
+        }
+      ]
+    },
+    "capital_one_savings": {
+      "name": "360 Performance Savings",
+      "last4": "2125",
+      "institution": "Capital One",
+      "type": "savings",
+      "apy_note": "High-yield savings, interest paid monthly",
+      "balance": 10292.76,
+      "balance_date": "2026-06-18",
+      "transactions": [
+        {
+          "date": "2026-06-18",
+          "description": "Deposit from RIVIAN AND VW GR PAYROLL",
+          "category": "Transfer",
+          "amount": 3188.5
+        },
+        {
+          "date": "2026-06-11",
+          "description": "Withdrawal to 360 Checking XXXXXXX2657",
+          "category": "Transfer",
+          "amount": -4500.0
+        },
+        {
+          "date": "2026-06-10",
+          "description": "Withdrawal to 360 Checking XXXXXXX2657",
+          "category": "Transfer",
+          "amount": -3000.0
+        },
+        {
+          "date": "2026-06-05",
+          "description": "Deposit from RIVIAN AND VW GR PAYROLL",
+          "category": "Transfer",
+          "amount": 3190.61
+        },
+        {
+          "date": "2026-06-03",
+          "description": "Withdrawal from OHANA HOUSING CO OHANA HOUS",
+          "category": "Transfer",
+          "amount": -1212.26
+        },
+        {
+          "date": "2026-05-31",
+          "description": "Monthly Interest Paid",
+          "category": "Transfer",
+          "amount": 25.25
+        },
+        {
+          "date": "2026-05-22",
+          "description": "Deposit from RIVIAN AND VW GR PAYROLL",
+          "category": "Transfer",
+          "amount": 3380.26
+        }
+      ]
+    },
+    "discover_it": {
+      "name": "Discover it",
+      "last4": "4762",
+      "institution": "Discover",
+      "type": "credit_card",
+      "current_balance": 265.85,
+      "credit_limit": 3300,
+      "available_credit": 3034,
+      "last_statement_balance": 589.21,
+      "last_statement_date": "2026-05-25",
+      "payment_due": "No Payment Due",
+      "transactions": [
+        {
+          "date": "2026-05-23",
+          "description": "SOLESKA MARKET MENLO PARK CAAPPLE PAY ENDING IN 7265",
+          "category": "Supermarkets",
+          "amount": 7.99
+        },
+        {
+          "date": "2026-05-22",
+          "description": "RIVAN COFFEE PALO ALTO CAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 4.9
+        },
+        {
+          "date": "2026-05-21",
+          "description": "RIVAN COFFEE PALO ALTO CAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 3.7
+        },
+        {
+          "date": "2026-05-20",
+          "description": "DIRECTPAY FULL BALANCESEE DETAILS OF YOUR NEXT DIRECTPAY BELOW",
+          "category": "Payments and Credits",
+          "amount": -258.19
+        },
+        {
+          "date": "2026-05-19",
+          "description": "SQ *RAMEN NAGI PALO AL PALO ALTO CA0001152921517088344574",
+          "category": "Restaurants",
+          "amount": 91.09
+        },
+        {
+          "date": "2026-05-17",
+          "description": "STANFORD GOLF COURSE REDWOOD CITY CAAPPLE PAY ENDING IN 7265",
+          "category": "Education",
+          "amount": 15.0
+        },
+        {
+          "date": "2026-05-16",
+          "description": "IN-N-OUT REDWOOD CITY REDWOOD CITY CA01664R",
+          "category": "Restaurants",
+          "amount": 17.85
+        },
+        {
+          "date": "2026-05-15",
+          "description": "TST*ZOMBIERUNNER COFFE PALO ALTO CAAPPLE PAY ENDING IN 726500041590031973712769AA",
+          "category": "Restaurants",
+          "amount": 6.75
+        },
+        {
+          "date": "2026-05-13",
+          "description": "RIVAN COFFEE PALO ALTO CAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 0.89
+        },
+        {
+          "date": "2026-05-09",
+          "description": "SHARP PARK GOLF COURSE PACIFICA CA",
+          "category": "Travel/ Entertainment",
+          "amount": 114.0
+        },
+        {
+          "date": "2026-05-09",
+          "description": "SHARP PARK RESTAURANT & PACIFICA CA",
+          "category": "Restaurants",
+          "amount": 50.0
+        },
+        {
+          "date": "2026-05-09",
+          "description": "SQ *ZAREEN'S PALO ALTO PALO ALTO CA0001152921517019666762",
+          "category": "Restaurants",
+          "amount": 76.7
+        },
+        {
+          "date": "2026-05-08",
+          "description": "SQ *KALI GREEK KITCHEN PALO ALTO CAAPPLE PAY ENDING IN 72650001152921517015635564",
+          "category": "Restaurants",
+          "amount": 20.73
+        },
+        {
+          "date": "2026-05-06",
+          "description": "RIVIAN CAFE 415-912-8438 CAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 5.46
+        },
+        {
+          "date": "2026-05-05",
+          "description": "CHIPOTLE 0801 MOUNTAIN VIEWCAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 17.85
+        },
+        {
+          "date": "2026-05-01",
+          "description": "RIVAN COFFEE PALO ALTO CAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 4.63
+        },
+        {
+          "date": "2026-05-01",
+          "description": "RIVIAN CAFE 415-912-8438 CAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 13.1
+        },
+        {
+          "date": "2026-04-30",
+          "description": "CHIPOTLE 0801 MOUNTAIN VIEWCAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 16.46
+        },
+        {
+          "date": "2026-04-29",
+          "description": "CHIPOTLE 1174 SAN CARLOS CAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 15.64
+        },
+        {
+          "date": "2026-04-26",
+          "description": "CHIPOTLE 0801 MOUNTAIN VIEWCAAPPLE PAY ENDING IN 7265",
+          "category": "Restaurants",
+          "amount": 17.85
+        },
+        {
+          "date": "2026-04-26",
+          "description": "STARBUCKS STORE 05639 MENLO PARK CAAPPLE PAY ENDING IN 72656F4E451E639F715184",
+          "category": "Restaurants",
+          "amount": 6.55
+        },
+        {
+          "date": "2026-04-25",
+          "description": "SAFEWAY #2948 MOUNTAIN VIEWCAAPPLE PAY ENDING IN 7265",
+          "category": "Supermarkets",
+          "amount": 82.07
+        }
+      ]
+    },
+    "chase_sapphire_preferred": {
+      "name": "Chase Sapphire Preferred",
+      "last4": "7044",
+      "institution": "Chase",
+      "type": "credit_card",
+      "current_balance": 115.07,
+      "credit_limit": 6589.08,
+      "available_credit": 6474.01,
+      "last_statement_balance": 0.0,
+      "account_note": "NEW CARD \u2014 signup bonus: spend $5,000 by 2026-09-07 for 75,000 Ultimate Rewards points. Only $115.07 spent, $4,884.93 remaining to hit bonus.",
+      "signup_bonus": {
+        "spend_goal": 5000,
+        "spend_by": "2026-09-07",
+        "points": 75000
+      },
+      "autopay_scheduled": "2026-08-03",
+      "transactions": [
+        {
+          "date": "2026-06-13",
+          "post_date": "2026-06-15",
+          "description": "ARMK ORACLE PARK F&B",
+          "category": "Food & Drink",
+          "amount": -8.85
+        },
+        {
+          "date": "2026-06-14",
+          "post_date": "2026-06-15",
+          "description": "DD *DOORDASH ORENSHUMM",
+          "category": "Food & Drink",
+          "amount": -18.92
+        },
+        {
+          "date": "2026-06-14",
+          "post_date": "2026-06-15",
+          "description": "SQ *PHILZ COFFEE",
+          "category": "Food & Drink",
+          "amount": -7.15
+        },
+        {
+          "date": "2026-06-14",
+          "post_date": "2026-06-15",
+          "description": "THE MELT-STANFORD",
+          "category": "Food & Drink",
+          "amount": -11.99
+        },
+        {
+          "date": "2026-06-11",
+          "post_date": "2026-06-14",
+          "description": "TST*ZOMBIERUNNER COFFEE",
+          "category": "Food & Drink",
+          "amount": -7.0
+        },
+        {
+          "date": "2026-06-12",
+          "post_date": "2026-06-14",
+          "description": "SQ *COFFEEBAR MENLO PARK",
+          "category": "Food & Drink",
+          "amount": -9.02
+        },
+        {
+          "date": "2026-06-11",
+          "post_date": "2026-06-14",
+          "description": "TST*ZOMBIERUNNER COFFEE",
+          "category": "Food & Drink",
+          "amount": -8.0
+        },
+        {
+          "date": "2026-06-11",
+          "post_date": "2026-06-14",
+          "description": "THE MELT-STANFORD",
+          "category": "Food & Drink",
+          "amount": -13.08
+        },
+        {
+          "date": "2026-06-09",
+          "post_date": "2026-06-10",
+          "description": "CHIPOTLE 0801",
+          "category": "Food & Drink",
+          "amount": -15.15
+        },
+        {
+          "date": "2026-06-08",
+          "post_date": "2026-06-09",
+          "description": "CHIPOTLE 1265",
+          "category": "Food & Drink",
+          "amount": -15.91
+        }
+      ]
+    },
+    "schwab_brokerage": {
+      "name": "Custodial Brokerage",
+      "account_suffix": "154",
+      "institution": "Charles Schwab",
+      "type": "taxable_brokerage",
+      "total_value": 37669.18,
+      "cash": 90.24,
+      "total_cost_basis": 31279.31,
+      "total_gain_loss": 6389.87,
+      "total_gain_loss_pct": 20.43,
+      "value_date": "2026-06-18",
+      "positions": [
+        {
+          "symbol": "VOO",
+          "name": "VANGUARD S&P 500 ETF",
+          "quantity": 32.1988,
+          "price": 688.5,
+          "market_value": 22168.87,
+          "cost_basis": 20289.37,
+          "gain_loss": 1879.5,
+          "gain_loss_pct": 9.26,
+          "type": "ETFs & Closed End Funds"
+        },
+        {
+          "symbol": "SPY",
+          "name": "STATE STREET SPDR S&P 500 ETF TRUST",
+          "quantity": 14.0,
+          "price": 746.94,
+          "market_value": 10457.16,
+          "cost_basis": 6628.97,
+          "gain_loss": 3828.19,
+          "gain_loss_pct": 57.75,
+          "type": "ETFs & Closed End Funds"
+        },
+        {
+          "symbol": "SWPPX",
+          "name": "SCHWAB S&P 500 INDEX",
+          "quantity": 207.499,
+          "price": 19.32,
+          "market_value": 4008.88,
+          "cost_basis": 3360.97,
+          "gain_loss": 647.91,
+          "gain_loss_pct": 19.28,
+          "type": "Mutual Fund"
+        },
+        {
+          "symbol": "VXUS",
+          "name": "VANGUARD TOTAL INTERNATIONAL STOCK INDEX FUND ETF SHARES",
+          "quantity": 11.9019,
+          "price": 86.9,
+          "market_value": 1034.27,
+          "cost_basis": 1000.0,
+          "gain_loss": 34.27,
+          "gain_loss_pct": 3.43,
+          "type": "ETFs & Closed End Funds"
+        }
+      ],
+      "transactions_ytd": [
+        {
+          "date": "2026-06-15",
+          "action": "MoneyLink Transfer",
+          "description": "Tfr CAPITAL ONE NATION",
+          "amount": 4500.0
+        },
+        {
+          "date": "2026-06-11",
+          "action": "Buy",
+          "symbol": "VOO",
+          "quantity": 5.0757,
+          "price": 669.8505,
+          "amount": -3399.96
+        },
+        {
+          "date": "2026-06-11",
+          "action": "MoneyLink Adj",
+          "description": "Tfr CAPITAL ONE NATION (adj)",
+          "amount": -4500.0
+        },
+        {
+          "date": "2026-06-11",
+          "action": "MoneyLink Transfer",
+          "description": "Tfr CAPITAL ONE NATION",
+          "amount": 3000.0
+        },
+        {
+          "date": "2026-06-09",
+          "action": "MoneyLink Transfer",
+          "description": "Tfr CAPITAL ONE NATION",
+          "amount": 4500.0
+        },
+        {
+          "date": "2026-06-08",
+          "action": "Buy",
+          "symbol": "VXUS",
+          "quantity": 11.9019,
+          "price": 84.0202,
+          "amount": -1000.0
+        },
+        {
+          "date": "2026-06-08",
+          "action": "Buy",
+          "symbol": "VOO",
+          "quantity": 5.1231,
+          "price": 683.1703,
+          "amount": -3499.95
+        },
+        {
+          "date": "2026-04-30",
+          "action": "Cash Dividend",
+          "symbol": "SPY",
+          "amount": 25.16
+        },
+        {
+          "date": "2026-03-31",
+          "action": "Cash Dividend",
+          "symbol": "VOO",
+          "amount": 26.21
+        },
+        {
+          "date": "2026-03-30",
+          "action": "MoneyLink Transfer",
+          "description": "Tfr CAPITAL ONE NATION",
+          "amount": 3000.0
+        },
+        {
+          "date": "2026-03-27",
+          "action": "Buy",
+          "symbol": "VOO",
+          "quantity": 5,
+          "price": 583.77,
+          "amount": -2918.85
+        },
+        {
+          "date": "2026-03-27",
+          "action": "Buy",
+          "symbol": "VOO",
+          "quantity": 3,
+          "price": 590.79,
+          "amount": -1772.37
+        },
+        {
+          "date": "2026-03-27",
+          "action": "MoneyLink Transfer",
+          "description": "Tfr CAPITAL ONE NATION",
+          "amount": 2000.0
+        },
+        {
+          "date": "2026-03-13",
+          "action": "MoneyLink Transfer",
+          "description": "Tfr CAPITAL ONE NATION",
+          "amount": 3000.0
+        },
+        {
+          "date": "2026-03-12",
+          "action": "Buy",
+          "symbol": "VOO",
+          "quantity": 5,
+          "price": 614.1691,
+          "amount": -3070.85
+        },
+        {
+          "date": "2026-02-06",
+          "action": "MoneyLink Transfer",
+          "description": "Tfr CAPITAL ONE NATION",
+          "amount": 5800.0
+        },
+        {
+          "date": "2026-02-05",
+          "action": "Buy",
+          "symbol": "VOO",
+          "quantity": 9,
+          "price": 625.265,
+          "amount": -5627.39
+        },
+        {
+          "date": "2026-01-30",
+          "action": "Pr Yr Cash Div",
+          "symbol": "SPY",
+          "amount": 27.91
+        }
+      ]
+    },
+    "fidelity_roth_ira": {
+      "name": "Roth IRA",
+      "account_number": "245734800",
+      "institution": "Fidelity",
+      "type": "roth_ira",
+      "value_date": "2026-06-18",
+      "positions": [
+        {
+          "symbol": "VOO",
+          "name": "VANGUARD INDEX FUNDS S&P 500 ETF USD",
+          "quantity": 3.681,
+          "price": 688.11,
+          "market_value": 2532.93,
+          "cost_basis": 1799.79,
+          "gain_loss": 733.14,
+          "gain_loss_pct": 40.73,
+          "type": "Cash"
+        },
+        {
+          "symbol": "FXAIX",
+          "name": "FIDELITY 500 INDEX FUND",
+          "quantity": 2.928,
+          "price": 261.21,
+          "market_value": 764.82,
+          "cost_basis": 540.0,
+          "gain_loss": 224.82,
+          "gain_loss_pct": 41.63,
+          "type": "Cash"
+        },
+        {
+          "symbol": "SPAXX**",
+          "name": "HELD IN MONEY MARKET",
+          "quantity": 0.0,
+          "price": 0.0,
+          "market_value": 7.09,
+          "cost_basis": 0.0,
+          "gain_loss": 7.09,
+          "gain_loss_pct": 0,
+          "type": "Cash"
+        }
+      ],
+      "total_value": 3304.84,
+      "total_cost_basis": 2339.79,
+      "total_gain_loss": 965.05,
+      "total_gain_loss_pct": 41.25
+    },
+    "apple_card": {
+      "name": "Apple Card",
+      "institution": "Goldman Sachs / Apple",
+      "type": "credit_card",
+      "current_balance": 504.14,
+      "credit_limit": 5000,
+      "available_credit": 4495.86,
+      "payment_due_date": "2026-07-31",
+      "payment_note": "No payment due yet \u2014 first payment due July 31, 2026",
+      "transaction_note": "Apple Card purchases appear as APPLE CASH SENT MONEY entries in Cap1 checking when paid via Apple Cash; separate transaction history not provided"
+    }
+  },
+  "income_summary": {
+    "source": "Auto-detected from savings deposits",
+    "deposits": [
+      {
+        "date": "2026-06-18",
+        "net_amount": 3188.5
+      },
+      {
+        "date": "2026-06-05",
+        "net_amount": 3190.61
+      },
+      {
+        "date": "2026-05-22",
+        "net_amount": 3380.26
+      }
+    ],
+    "ytd_net_income": 9759.37,
+    "avg_biweekly_net": 3253.12
+  },
+  "investment_goals": {
+    "roth_ira_2026_contributed": 0,
+    "monthly_brokerage_target": 3000
+  },
+  "recurring_expenses": {
+    "rent": {
+      "payee": "OHANA HOUSING CO",
+      "monthly_amount_recent": 1212.26,
+      "monthly_amount_prior": 1398.0,
+      "note": "Dropped from $1,398 to $1,212.26 in June \u2014 possible roommate change or adjustment"
+    },
+    "embarc_redwood": {
+      "payee": "EMBARC REDWOOD C",
+      "note": "Irregular amounts \u2014 likely co-working/utilities/shared costs at Embarc Collective Redwood City",
+      "recent_charges": [
+        45.54,
+        77.6,
+        31.55,
+        155.15,
+        61.7,
+        90.21,
+        89.5,
+        39.45,
+        37.85,
+        32.9,
+        55.0
+      ]
+    },
+    "usaa_transfers": {
+      "note": "Periodic transfers to USAA Federal Savings Bank \u2014 could be car insurance or other recurring obligation",
+      "recent_amounts": [
+        -200.0,
+        -600.0,
+        -50.0,
+        -240.0,
+        -176.0,
+        250.0,
+        1500.0
+      ]
+    }
+  }
+}

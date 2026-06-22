@@ -249,10 +249,11 @@ def build_site_data() -> dict:
 
         finance_data = {
             "net_worth": {
-                "total":   nw["total_assets"],
-                "cash":    nw["liquid_cash"],
-                "taxable": nw["taxable_investments"],
-                "ira":     nw["tax_advantaged_investments"],
+                "total":       nw["total_assets"],
+                "liabilities": nw.get("total_liabilities", 0),
+                "cash":        nw["liquid_cash"],
+                "taxable":     nw["taxable_investments"],
+                "ira":         nw["tax_advantaged_investments"],
             },
             "income": {
                 "avg_monthly_net": round(income["avg_biweekly_net"] * 26 / 12, 2),
@@ -686,6 +687,7 @@ function flipHide(el, target, ms) {
   const nw = F.net_worth;
   const nwEl    = document.getElementById('f-nw');
   const _nwFmt   = fmt(nw.total);
+  const _liabFmt = fmt(nw.liabilities || 0);
   const _cashFmt = fmt(nw.cash);
   const _taxFmt  = fmt(nw.taxable);
   const _iraFmt  = fmt(nw.ira);
@@ -695,7 +697,8 @@ function flipHide(el, target, ms) {
   document.getElementById('f-nw-sub').innerHTML =
     `<div>Liquid Cash <span id="f-nw-cash">${_cashFmt.replace(/\d/g,'–')}</span></div>` +
     `<div>Taxable Investments <span id="f-nw-taxable">${_taxFmt.replace(/\d/g,'–')}</span></div>` +
-    `<div>Roth IRA <span id="f-nw-ira">${_iraFmt.replace(/\d/g,'–')}</span></div>`;
+    `<div>Roth IRA <span id="f-nw-ira">${_iraFmt.replace(/\d/g,'–')}</span></div>` +
+    `<div style="color:var(--red)">Liabilities <span id="f-nw-liab">−${_liabFmt.replace(/\d/g,'–')}</span></div>`;
 
   window.toggleNW = function() {
     _nwVisible = !_nwVisible;
@@ -705,12 +708,14 @@ function flipHide(el, target, ms) {
       flipReveal(document.getElementById('f-nw-cash'),         _cashFmt, 1100);
       flipReveal(document.getElementById('f-nw-taxable'),      _taxFmt,  1100);
       flipReveal(document.getElementById('f-nw-ira'),          _iraFmt,  1100);
+      flipReveal(document.getElementById('f-nw-liab'),   '−'+_liabFmt,  1100);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
     } else {
       flipHide(nwEl,                                          _nwFmt,   700);
       flipHide(document.getElementById('f-nw-cash'),         _cashFmt, 550);
       flipHide(document.getElementById('f-nw-taxable'),      _taxFmt,  550);
       flipHide(document.getElementById('f-nw-ira'),          _iraFmt,  550);
+      flipHide(document.getElementById('f-nw-liab'),   '−'+_liabFmt,  550);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
     }
   };

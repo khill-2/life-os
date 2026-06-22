@@ -228,7 +228,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <button class="nav-tab" onclick="showTab('recruiting')">Recruiting</button>
   <button class="nav-tab" onclick="showTab('school')">School</button>
   <button class="nav-tab" onclick="showTab('health')">Health</button>
-  <div class="nav-right">SNAPSHOT // 2026-06-18</div>
+  <div class="nav-right">SNAPSHOT // 2026-06-21</div>
 </nav>
 
 <!-- ── Finance ──────────────────────────────────────────────── -->
@@ -312,117 +312,98 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
 <script>
 const D = {
-  "updated": "2026-06-18",
+  "updated": "2026-06-21",
   "month_label": "June 2026",
   "finance": {
     "net_worth": {
-      "total": 51293.74,
+      "total": 51395.16,
+      "liabilities": 885.06,
       "cash": 10421.14,
-      "taxable": 37600.65,
-      "ira": 3271.95
+      "taxable": 37669.18,
+      "ira": 3304.84
     },
     "income": {
-      "avg_monthly_net": 6852.95,
-      "ytd_net": 25293.23,
-      "source": "Rivian and VW Group (RIVIAN AND VW GR)"
+      "avg_monthly_net": 7048.43,
+      "ytd_net": 9759.37,
+      "source": "Auto-detected from savings deposits"
     },
     "monthly_spending": {
-      "2026-01": {
-        "Other": 51.8,
-        "Transportation": 40.0
-      },
-      "2026-02": {
-        "Workspace": 125.75,
-        "Health": 55.0,
-        "Food & Dining": 50.56,
-        "Entertainment": 50.0,
-        "Shopping": 22.97
-      },
-      "2026-03": {
-        "Housing": 1398.0,
-        "Food & Dining": 405.76,
-        "Workspace": 219.16,
-        "Transportation": 98.97,
-        "Shopping": 58.48,
-        "Entertainment": 57.26
-      },
       "2026-04": {
-        "Housing": 1398.0,
-        "Food & Dining": 287.49,
-        "Auto": 238.75,
-        "Workspace": 216.85,
-        "Insurance": 176.0
+        "Food & Dining": 138.57
       },
       "2026-05": {
-        "Housing": 1398.0,
-        "Food & Dining": 391.4,
+        "Food & Dining": 321.64,
         "Insurance": 290.0,
-        "Entertainment": 144.0,
-        "Workspace": 109.15
+        "Travel/ Entertainment": 114.0,
+        "Workspace": 77.6,
+        "Entertainment": 15.0
       },
       "2026-06": {
         "Housing": 1212.26,
         "Insurance": 800.0,
-        "Food & Dining": 231.16,
+        "Food & Dining": 115.07,
         "Trading": 50.21,
-        "Workspace": 45.54,
-        "Entertainment": 35.0
+        "Workspace": 45.54
       }
     },
     "monthly_totals": {
-      "2026-01": 91.8,
-      "2026-02": 304.28,
-      "2026-03": 2237.63,
-      "2026-04": 2317.09,
-      "2026-05": 2332.55,
-      "2026-06": 2374.17
+      "2026-04": 138.57,
+      "2026-05": 818.24,
+      "2026-06": 2223.08
     },
     "latest_month": "2026-06",
-    "total_spend_latest": 2374.17,
+    "total_spend_latest": 2223.08,
     "portfolio": {
-      "total": 40872.6,
-      "total_gain": 7156.17,
+      "total": 40974.020000000004,
+      "total_gain": 7354.92,
       "positions": [
         {
           "symbol": "VOO",
-          "value": 22073.89,
-          "gain": 1784.52,
-          "gain_pct": 8.8,
+          "value": 22168.87,
+          "gain": 1879.5,
+          "gain_pct": 9.26,
           "account": "Schwab"
         },
         {
           "symbol": "SPY",
-          "value": 10438.96,
-          "gain": 3809.99,
-          "gain_pct": 57.47,
+          "value": 10457.16,
+          "gain": 3828.19,
+          "gain_pct": 57.75,
           "account": "Schwab"
         },
         {
           "symbol": "SWPPX",
-          "value": 3965.31,
-          "gain": 604.34,
-          "gain_pct": 17.98,
+          "value": 4008.88,
+          "gain": 647.91,
+          "gain_pct": 19.28,
           "account": "Schwab"
         },
         {
           "symbol": "VOO",
-          "value": 2508.27,
-          "gain": 708.48,
-          "gain_pct": 39.36,
+          "value": 2532.93,
+          "gain": 733.14,
+          "gain_pct": 40.73,
           "account": "Fidelity Roth"
         },
         {
           "symbol": "VXUS",
-          "value": 1032.25,
-          "gain": 32.25,
-          "gain_pct": 3.22,
+          "value": 1034.27,
+          "gain": 34.27,
+          "gain_pct": 3.43,
           "account": "Schwab"
         },
         {
           "symbol": "FXAIX",
-          "value": 756.59,
-          "gain": 216.59,
-          "gain_pct": 40.11,
+          "value": 764.82,
+          "gain": 224.82,
+          "gain_pct": 41.63,
+          "account": "Fidelity Roth"
+        },
+        {
+          "symbol": "SPAXX**",
+          "value": 7.09,
+          "gain": 7.09,
+          "gain_pct": 0,
           "account": "Fidelity Roth"
         }
       ]
@@ -497,7 +478,7 @@ const D = {
   },
   "school": {
     "entries": [],
-    "today": "2026-06-20"
+    "today": "2026-06-21"
   },
   "health": {
     "entries": [],
@@ -507,7 +488,7 @@ const D = {
       "pct_workout_30": 0,
       "pct_ate_well_30": 0
     },
-    "today": "2026-06-20"
+    "today": "2026-06-21"
   }
 };
 
@@ -579,6 +560,7 @@ function flipHide(el, target, ms) {
   const nw = F.net_worth;
   const nwEl    = document.getElementById('f-nw');
   const _nwFmt   = fmt(nw.total);
+  const _liabFmt = fmt(nw.liabilities || 0);
   const _cashFmt = fmt(nw.cash);
   const _taxFmt  = fmt(nw.taxable);
   const _iraFmt  = fmt(nw.ira);
@@ -588,7 +570,8 @@ function flipHide(el, target, ms) {
   document.getElementById('f-nw-sub').innerHTML =
     `<div>Liquid Cash <span id="f-nw-cash">${_cashFmt.replace(/\d/g,'–')}</span></div>` +
     `<div>Taxable Investments <span id="f-nw-taxable">${_taxFmt.replace(/\d/g,'–')}</span></div>` +
-    `<div>Roth IRA <span id="f-nw-ira">${_iraFmt.replace(/\d/g,'–')}</span></div>`;
+    `<div>Roth IRA <span id="f-nw-ira">${_iraFmt.replace(/\d/g,'–')}</span></div>` +
+    `<div style="color:var(--red)">Liabilities <span id="f-nw-liab">−${_liabFmt.replace(/\d/g,'–')}</span></div>`;
 
   window.toggleNW = function() {
     _nwVisible = !_nwVisible;
@@ -598,12 +581,14 @@ function flipHide(el, target, ms) {
       flipReveal(document.getElementById('f-nw-cash'),         _cashFmt, 1100);
       flipReveal(document.getElementById('f-nw-taxable'),      _taxFmt,  1100);
       flipReveal(document.getElementById('f-nw-ira'),          _iraFmt,  1100);
+      flipReveal(document.getElementById('f-nw-liab'),   '−'+_liabFmt,  1100);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
     } else {
       flipHide(nwEl,                                          _nwFmt,   700);
       flipHide(document.getElementById('f-nw-cash'),         _cashFmt, 550);
       flipHide(document.getElementById('f-nw-taxable'),      _taxFmt,  550);
       flipHide(document.getElementById('f-nw-ira'),          _iraFmt,  550);
+      flipHide(document.getElementById('f-nw-liab'),   '−'+_liabFmt,  550);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
     }
   };
