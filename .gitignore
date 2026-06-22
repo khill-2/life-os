@@ -10,3 +10,5 @@ __pycache__/
 venv/
 .claude/
 csv_imports/*.csv
+node_modules/
+dist/
