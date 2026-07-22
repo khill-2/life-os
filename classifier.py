@@ -7,17 +7,75 @@ from config import STAGE_KEYWORDS, TARGET_COMPANIES, FINANCE_DOMAINS
 # Domains/roots that should never be treated as a recruiting company
 _RECRUITING_BLOCKLIST = {
     "gmail", "googlemail", "yahoo", "outlook", "hotmail", "icloud",   # mail services
-    "linkedin", "indeed", "glassdoor", "ziprecruiter", "lever", "greenhouse",
-    "icims", "workday", "taleo", "smartrecruiters", "jobvite",         # ATS platforms
-    "leetcode", "hackerrank", "codesignal", "codility",                # coding platforms
+    "linkedin", "indeed", "glassdoor", "ziprecruiter", "greenhouse",
+    "icims", "workday", "taleo", "smartrecruiters", "jobvite",         # ATS platforms (direct)
+    "leetcode", "hackerrank", "codesignal", "codility", "algo",        # coding platforms
     "levels", "teamblind", "blind",                                     # job discussion sites
     "martinizing", "beckettsimonon", "shipsticks", "capitaloneshopping",
     "newyorktimes", "nytimes", "garmin", "logitech",                   # non-tech consumer brands
     "notion",                                                           # product emails, not recruiting
 }
 
+# ATS platform domain roots — sender is the ATS, not the company.
+# Company must be extracted from subject/sender name instead.
+# If extraction fails, _extract_company returns None (not the ATS platform name).
+_ATS_ROOTS = {"greenhouse-mail", "myworkday", "ashbyhq", "lever"}
+
+# Extra domain-level suffixes that are also ATS (matched against full domain, not just root)
+_ATS_DOMAIN_CONTAINS = {"greenhouse-mail", "myworkday", "ashbyhq"}
+
+_ATS_JUNK_LOCALS = {"workday", "hr", "noreply", "no-reply", "donotreply", "jj", "mailbox"}
+
+_ATS_SUBJECT_PATTERNS = [
+    # "Thank you for applying to Anduril Industries, Keller!"
+    re.compile(r"(?:applying|applied) to ([A-Z][A-Za-z\s&,\-]+?)(?:,\s*\w+)?[!.]?\s*$", re.IGNORECASE),
+    # "Lyft Update - Software Engineer Intern..."
+    re.compile(r"^([A-Z][A-Za-z]+)\s+(?:Update|Application|Status|Opportunity)\b"),
+    # "Thank you for your interest in Tesla" / "Thanks for your interest in Hermeus"
+    re.compile(r"(?:interest in|joining) ([A-Z][A-Za-z\s&]+?)(?:,|!|\.|\s*$)"),
+    # "GEICO Application Status"
+    re.compile(r"^([A-Z]{2,}[A-Za-z]*)\s+(?:Application|Update|Status)\b"),
+    # "Ramp | Software Engineer"  or "Let's stay in touch | Ramp"
+    re.compile(r"\|\s*([A-Z][A-Za-z]+)\s*$"),
+    re.compile(r"^([A-Z][A-Za-z]+)\s*\|"),
+]
+
+_ATS_REJECT_WORDS = {"workday", "greenhouse", "lever", "ashby", "update", "status", "new"}
+
+
+def _extract_ats_company(domain: str, sender: str, subject: str) -> Optional[str]:
+    """For ATS platform senders, extract the actual company name. Returns None if unknown."""
+    root = domain.split(".")[-2] if domain.count(".") >= 1 else domain
+    if root not in _ATS_ROOTS:
+        return None
+
+    # Workday: local part of address encodes the company (e.g. nvidia@myworkday.com)
+    if root == "myworkday":
+        m = re.search(r"([^@<\s]+)@myworkday\.com", sender)
+        if m:
+            local = m.group(1).lower().split(".")[-1]  # handle "Mailbox.CIBC-..." → "cibc-..."
+            # Strip trailing junk suffixes added by some Workday configs
+            local = re.sub(r"-?workday.*$", "", local).strip("-")
+            if local and local not in _ATS_JUNK_LOCALS and len(local) >= 2:
+                clean = local.replace("-", " ").replace("_", " ")
+                key = clean.replace(" ", "").lower()
+                return _COMPANY_OVERRIDES.get(key, clean.title())
+
+    # Try subject patterns
+    for pat in _ATS_SUBJECT_PATTERNS:
+        m = pat.search(subject)
+        if m:
+            company = m.group(1).strip().rstrip(",.")
+            if company.lower() in _ATS_REJECT_WORDS:
+                continue
+            key = company.lower().replace(" ", "").replace("-", "")
+            return _COMPANY_OVERRIDES.get(key, company.title())
+
+    return None
+
 _PROMO_SIGNALS = [
     "% off", "sale", "deal", "discount", "coupon", "offer from",
+    "daily digest", "workday inbox",
     "save up to", "limited time", "free shipping", "shop now",
     "unsubscribe", "new styles", "new arrivals", "gift subscription",
     "streaming day", "summer break", "school's out",
@@ -61,52 +119,73 @@ def _is_promo(subject: str) -> bool:
     return any(p in s for p in _PROMO_SIGNALS)
 
 
+_COMPANY_OVERRIDES = {
+    "amazon": "Amazon",
+    "google": "Google",
+    "meta": "Meta",
+    "apple": "Apple",
+    "microsoft": "Microsoft",
+    "netflix": "Netflix",
+    "nvidia": "NVIDIA",
+    "openai": "OpenAI",
+    "anthropic": "Anthropic",
+    "stripe": "Stripe",
+    "databricks": "Databricks",
+    "roblox": "Roblox",
+    "robinhood": "Robinhood",
+    "tiktok": "TikTok",
+    "zoom": "Zoom",
+    "rivian": "Rivian",
+    "spacex": "SpaceX",
+    "activision": "Activision",
+    "hpe": "HPE",
+    "oraclecloud": "Oracle",
+    "capitalone": "Capital One",
+    "twilio": "Twilio",
+    "palantir": "Palantir",
+    "uber": "Uber",
+    "lyft": "Lyft",
+    "airbnb": "Airbnb",
+    "coinbase": "Coinbase",
+    "salesforce": "Salesforce",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter",
+    "snap": "Snap",
+    "pinterest": "Pinterest",
+    "doordash": "DoorDash",
+    "instacart": "Instacart",
+    "waymo": "Waymo",
+    "tesla": "Tesla",
+    "cloudflare": "Cloudflare",
+    "anduril": "Anduril",
+    "andurilindustries": "Anduril",
+    "ramp": "Ramp",
+    "imc": "IMC",
+    "geico": "GEICO",
+    "tmobile": "T-Mobile",
+    "intel": "Intel",
+    "hermeus": "Hermeus",
+    "lowes": "Lowe's",
+    "boeing": "Boeing",
+    "gemini": "Gemini",
+    "invesco": "Invesco",
+}
+
+
 def _extract_company(email: dict) -> Optional[str]:
-    domain = email.get("domain", "")
-    root = domain.split(".")[-2] if domain.count(".") >= 1 else domain
+    domain  = email.get("domain", "")
+    sender  = email.get("sender", "")
+    subject = email.get("subject", "")
+    root    = domain.split(".")[-2] if domain.count(".") >= 1 else domain
+
+    # ATS platform senders: must extract company from subject/sender; never use the ATS name
+    if root in _ATS_ROOTS:
+        return _extract_ats_company(domain, sender, subject)
 
     if domain in FINANCE_DOMAINS or root in _RECRUITING_BLOCKLIST:
         return None
 
-    overrides = {
-        "amazon": "Amazon",
-        "google": "Google",
-        "meta": "Meta",
-        "apple": "Apple",
-        "microsoft": "Microsoft",
-        "netflix": "Netflix",
-        "nvidia": "NVIDIA",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "stripe": "Stripe",
-        "databricks": "Databricks",
-        "roblox": "Roblox",
-        "robinhood": "Robinhood",
-        "tiktok": "TikTok",
-        "zoom": "Zoom",
-        "rivian": "Rivian",
-        "spacex": "SpaceX",
-        "activision": "Activision",
-        "hpe": "HPE",
-        "oraclecloud": "Oracle",
-        "capitalone": "Capital One",
-        "twilio": "Twilio",
-        "palantir": "Palantir",
-        "uber": "Uber",
-        "lyft": "Lyft",
-        "airbnb": "Airbnb",
-        "coinbase": "Coinbase",
-        "salesforce": "Salesforce",
-        "linkedin": "LinkedIn",
-        "twitter": "Twitter",
-        "snap": "Snap",
-        "pinterest": "Pinterest",
-        "doordash": "DoorDash",
-        "instacart": "Instacart",
-        "waymo": "Waymo",
-        "tesla": "Tesla",
-    }
-    return overrides.get(root, root.capitalize()) if root else None
+    return _COMPANY_OVERRIDES.get(root, root.capitalize()) if root else None
 
 
 def _infer_stage(text: str) -> str:
@@ -218,8 +297,10 @@ def classify_recruiting(email: dict) -> Optional[dict]:
     domain   = email.get("domain", "")
     root     = domain.split(".")[-2] if domain.count(".") >= 1 else domain
 
-    if domain in FINANCE_DOMAINS or root in _RECRUITING_BLOCKLIST:
-        return None
+    is_ats = root in _ATS_ROOTS
+    if not is_ats:
+        if domain in FINANCE_DOMAINS or root in _RECRUITING_BLOCKLIST:
+            return None
     if _is_promo(subject) or _is_generic_outreach(subject, snippet):
         return None
 
@@ -229,23 +310,23 @@ def classify_recruiting(email: dict) -> Optional[dict]:
     actionable_keywords = [
         "interview", "online assessment", "coding challenge", "offer letter",
         "virtual interview", "technical screen", "application received",
-        "thank you for applying", "next steps", "take-home",
+        "thank you for applying", "thanks for applying", "next steps", "take-home",
+        "thank you for your interest", "thanks for your interest",
+        "application update", "application status", "we received your application",
     ]
     # Awareness = mentions a role/program but could be cold outreach
     awareness_keywords = [
         "internship", "intern", "sde intern", "your application",
-        "software engineer intern", "new grad", "thanks for your interest",
-        "thank you for your interest", "we received your resume",
+        "software engineer intern", "new grad", "we received your resume",
     ]
 
-    from_target     = root.lower() in TARGET_COMPANIES
+    from_target     = root.lower() in TARGET_COMPANIES or is_ats
     snippet_lower   = snippet.lower()
-    has_actionable  = any(kw in subject_lower for kw in actionable_keywords)
+    has_actionable  = any(kw in subject_lower or kw in snippet_lower for kw in actionable_keywords)
     has_awareness   = any(kw in subject_lower or kw in snippet_lower for kw in awareness_keywords)
 
-    # Target companies: awareness signal is enough (we want all touchpoints from Google, etc.)
-    # Unknown companies: must have an actionable signal — cold outreach with just "internship" in
-    # the subject is not worth logging until there's an actual next step
+    # Target companies + ATS-sent emails: awareness signal is enough
+    # Unknown sender: must have an actionable signal
     if from_target:
         if not (has_actionable or has_awareness):
             return None
@@ -255,9 +336,6 @@ def classify_recruiting(email: dict) -> Optional[dict]:
 
     company = _extract_company(email)
     if not company:
-        return None
-
-    if company.lower() in {"amazon", "spacex"}:
         return None
 
     role      = _extract_role(subject, email["body"])

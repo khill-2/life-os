@@ -1,134 +1,120 @@
 {
-  "updated": "2026-06-21",
-  "month_label": "June 2026",
+  "updated": "2026-07-03",
+  "month_label": "July 2026",
   "finance": {
     "net_worth": {
-      "total": 51395.16,
+      "total": 56600.54,
       "liabilities": 885.06,
-      "cash": 10421.14,
-      "taxable": 37669.18,
-      "ira": 3304.84
+      "cash": 11801.51,
+      "taxable": 39996.44,
+      "ira": 4802.59
     },
     "income": {
-      "avg_monthly_net": 7048.43,
-      "ytd_net": 9759.37,
+      "avg_monthly_net": 6911.47,
+      "ytd_net": 9569.72,
       "source": "Auto-detected from savings deposits"
     },
     "monthly_spending": {
-      "2026-04": {
-        "Food & Dining": 138.57
+      "2026-06": {
+        "Travel/ Entertainment": 20.0,
+        "Restaurants": 84.05,
+        "Supermarkets": 32.04,
+        "Education": 15.0,
+        "": 125.99
       },
       "2026-05": {
-        "Food & Dining": 321.64,
-        "Insurance": 290.0,
-        "Travel/ Entertainment": 114.0,
-        "Workspace": 77.6,
-        "Entertainment": 15.0
-      },
-      "2026-06": {
-        "Housing": 1212.26,
-        "Insurance": 800.0,
-        "Food & Dining": 115.07,
-        "Trading": 50.21,
-        "Workspace": 45.54
+        "Supermarkets": 55.25,
+        "Restaurants": 14.51,
+        "Fees": 30.0,
+        "Education": 15.0
       }
     },
     "monthly_totals": {
-      "2026-04": 138.57,
-      "2026-05": 818.24,
-      "2026-06": 2223.08
+      "2026-06": 277.08,
+      "2026-05": 114.76
     },
     "latest_month": "2026-06",
-    "total_spend_latest": 2223.08,
+    "total_spend_latest": 277.08,
     "portfolio": {
-      "total": 40974.020000000004,
-      "total_gain": 7354.92,
       "positions": [
         {
           "symbol": "VOO",
-          "value": 22168.87,
-          "gain": 1879.5,
-          "gain_pct": 9.26,
-          "account": "Schwab"
+          "value": 24559.18,
+          "gain": 1769.86,
+          "gain_pct": 7.77
         },
         {
           "symbol": "SPY",
-          "value": 10457.16,
-          "gain": 3828.19,
-          "gain_pct": 57.75,
-          "account": "Schwab"
+          "value": 10426.92,
+          "gain": 3797.95,
+          "gain_pct": 57.29
         },
         {
           "symbol": "SWPPX",
-          "value": 4008.88,
-          "gain": 647.91,
-          "gain_pct": 19.28,
-          "account": "Schwab"
-        },
-        {
-          "symbol": "VOO",
-          "value": 2532.93,
-          "gain": 733.14,
-          "gain_pct": 40.73,
-          "account": "Fidelity Roth"
+          "value": 4000.58,
+          "gain": 639.61,
+          "gain_pct": 19.03
         },
         {
           "symbol": "VXUS",
-          "value": 1034.27,
-          "gain": 34.27,
-          "gain_pct": 3.43,
-          "account": "Schwab"
+          "value": 1009.76,
+          "gain": 9.76,
+          "gain_pct": 0.98
+        },
+        {
+          "symbol": "VOO",
+          "value": 4038.5,
+          "gain": 725.2,
+          "gain_pct": 21.89
         },
         {
           "symbol": "FXAIX",
-          "value": 764.82,
-          "gain": 224.82,
-          "gain_pct": 41.63,
-          "account": "Fidelity Roth"
+          "value": 763.27,
+          "gain": 223.27,
+          "gain_pct": 41.35
         },
         {
-          "symbol": "SPAXX**",
-          "value": 7.09,
-          "gain": 7.09,
-          "gain_pct": 0,
-          "account": "Fidelity Roth"
+          "symbol": "SPAXX",
+          "value": 14.33,
+          "gain": 14.33,
+          "gain_pct": 0
         }
-      ]
+      ],
+      "total": 44812.54,
+      "total_gain": 7179.98
     },
     "category_colors": {
-      "Food & Dining": "#ffffff",
-      "Housing": "#d4d4d4",
-      "Transportation": "#a3a3a3",
-      "Entertainment": "#8a8a8a",
-      "Auto": "#737373",
-      "Health": "#606060",
-      "Shopping": "#525252",
-      "Workspace": "#404040",
-      "Insurance": "#333333",
-      "Investments": "#e5e5e5",
-      "Fees": "#1f1f1f",
-      "Trading": "#b0b0b0",
-      "Other": "#2a2a2a"
+      "": "#999999",
+      "Restaurants": "#e07b54",
+      "Travel/ Entertainment": "#5b8dd9",
+      "Education": "#999999",
+      "Fees": "#999999",
+      "Supermarkets": "#e07b54"
     },
     "investment_goals": {
       "roth_ira": {
-        "contributed": 0,
-        "limit": 7000
+        "contributed": 1500.0,
+        "limit": 7500
       },
       "brokerage": {
-        "invested_ytd": 21289.37,
+        "invested_ytd": 25800.0,
         "monthly_target": 3000
-      },
-      "chase_bonus": {
-        "spend_goal": 5000,
-        "spend_by": "2026-09-07",
-        "points": 75000,
-        "current_spend": 115.07
       }
     }
   },
   "recruiting": {
     "entries": [
+      {
+        "id": "faf181d3-b723-4771-b993-251ccd68a61a",
+        "company": "Palantir",
+        "role": "Software Engineer, Internship (Dev)",
+        "stage": "Phone Screen",
+        "deadline": null,
+        "next_action": "Schedule ~20 min call with Caroline Kane (ckane@palantir.com)",
+        "last_contact": "2026-07-01",
+        "notes": "Recruiter Caroline Kane reached out re: SWE Intern (Dev / Gotham). Also option for Forward Deployed Internship (Delta) \u2014 email Caroline to switch.",
+        "created_at": "2026-07-03"
+      },
       {
         "id": "180ab63e-ccee-4a70-ad84-c59ab6764679",
         "company": "Apple",
@@ -145,36 +131,28 @@
       "by_stage": {
         "Applying": 0,
         "Applied": 1,
-        "Phone Screen": 0,
+        "Phone Screen": 1,
         "OA": 0,
         "Interview": 0,
         "Offer": 0,
         "Closed": 0
       },
-      "active": 1
+      "active": 2
     },
     "stage_colors": {
+      "Applying": "#888888",
       "Applied": "#666666",
       "Phone Screen": "#999999",
       "OA": "#bbbbbb",
       "Interview": "#dddddd",
       "Offer": "#ffffff",
-      "Closed": "#333333",
-      "Applying": "#888888"
+      "Closed": "#333333"
     }
   },
   "school": {
-    "entries": [],
-    "today": "2026-06-21"
+    "entries": []
   },
   "health": {
-    "entries": [],
-    "stats": {
-      "streak_workout": 0,
-      "streak_ate_well": 0,
-      "pct_workout_30": 0,
-      "pct_ate_well_30": 0
-    },
-    "today": "2026-06-21"
+    "entries": []
   }
 }

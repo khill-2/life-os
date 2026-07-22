@@ -15,14 +15,236 @@ import argparse
 import glob
 import json
 import os
+import socket
+import subprocess
 import sys
 import webbrowser
+from datetime import date
 
 from config import GMAIL_QUERIES, MAX_RESULTS_PER_QUERY
 from gmail_scraper import fetch_emails, ACCOUNTS
 from classifier import classify_recruiting, classify_school
 from json_writer import write_recruiting, write_school, write_health_backfill
-from site_generator import generate_site
+
+_PREVIEW_PORT = 4173
+
+_CATEGORY_COLORS = {
+    "Food & Dining":         "#e07b54",
+    "Restaurants":           "#e07b54",
+    "Supermarkets":          "#e07b54",
+    "Travel/ Entertainment": "#5b8dd9",
+    "Travel":                "#5b8dd9",
+    "Entertainment":         "#9b59b6",
+    "Housing":               "#f0c040",
+    "Insurance":             "#50c878",
+    "Workspace":             "#80cbc4",
+    "Gas":                   "#ff8c42",
+    "Shopping":              "#f06292",
+    "Health":                "#26a69a",
+    "Subscriptions":         "#78909c",
+    "Other":                 "#999999",
+}
+
+_SPEND_SKIP_CATEGORIES = {
+    "payments and credits", "payment", "transfer", "transfers",
+    "fees & adjustments", "rewards", "cashback",
+}
+
+
+def _snapshot_to_finance(snap: dict) -> dict:
+    """Convert csv_scraper snapshot → React Finance panel format."""
+    nws = snap.get("net_worth_summary", {})
+    net_worth = {
+        "total":      nws.get("total_assets", 0),
+        "liabilities": nws.get("total_liabilities", 0),
+        "cash":       nws.get("liquid_cash", 0),
+        "taxable":    nws.get("taxable_investments", 0),
+        "ira":        nws.get("tax_advantaged_investments", 0),
+    }
+
+    inc = snap.get("income_summary", {})
+    avg_biweekly = inc.get("avg_biweekly_net", 0)
+    income = {
+        "avg_monthly_net": round(avg_biweekly * 26 / 12, 2),
+        "ytd_net":         inc.get("ytd_net_income", 0),
+        "source":          inc.get("source", ""),
+    }
+
+    # Monthly spending from credit card + checking transactions
+    monthly_spending: dict[str, dict[str, float]] = {}
+    skip_types = {"checking", "savings", "taxable_brokerage", "roth_ira"}
+    for acct in snap.get("accounts", {}).values():
+        if acct.get("type") in skip_types:
+            continue
+        for t in acct.get("transactions", []):
+            amt = t.get("amount", 0)
+            if amt <= 0:
+                continue
+            cat = t.get("category", "Other")
+            if cat.lower() in _SPEND_SKIP_CATEGORIES:
+                continue
+            month = t["date"][:7]  # "YYYY-MM"
+            monthly_spending.setdefault(month, {})
+            monthly_spending[month][cat] = round(
+                monthly_spending[month].get(cat, 0) + amt, 2
+            )
+
+    monthly_totals = {m: round(sum(v.values()), 2) for m, v in monthly_spending.items()}
+    latest_month = max(monthly_spending) if monthly_spending else ""
+    total_spend_latest = monthly_totals.get(latest_month, 0)
+
+    # Portfolio — combine Schwab + Fidelity positions
+    schwab = snap.get("accounts", {}).get("schwab_brokerage", {})
+    fidelity = snap.get("accounts", {}).get("fidelity_roth_ira", {})
+    positions = []
+    for p in schwab.get("positions", []) + fidelity.get("positions", []):
+        if p.get("market_value", 0) <= 0:
+            continue
+        positions.append({
+            "symbol":    p["symbol"].rstrip("*"),
+            "value":     p["market_value"],
+            "gain":      p.get("gain_loss", 0),
+            "gain_pct":  p.get("gain_loss_pct", 0),
+        })
+    portfolio_total = sum(p["value"] for p in positions)
+    portfolio_gain  = sum(p["gain"]  for p in positions)
+    portfolio = {
+        "positions":  positions,
+        "total":      round(portfolio_total, 2),
+        "total_gain": round(portfolio_gain, 2),
+    }
+
+    # Build category_colors from whatever categories appear
+    all_cats = {c for month in monthly_spending.values() for c in month}
+    category_colors = {c: _CATEGORY_COLORS.get(c, "#999999") for c in all_cats}
+
+    # Brokerage YTD invested — sum MoneyLink deposits into Schwab this year
+    cur_year = str(date.today().year)
+    bro_ytd = sum(
+        t["amount"] for t in schwab.get("transactions_ytd", [])
+        if t.get("action", "").startswith("MoneyLink Transfer")
+        and t.get("amount", 0) > 0
+        and t.get("date", "").startswith(cur_year)
+    )
+
+    goals = snap.get("investment_goals", {})
+    investment_goals = {
+        "roth_ira": {
+            "contributed": goals.get("roth_ira_2026_contributed", 0),
+            "limit":       7500,
+        },
+        "brokerage": {
+            "invested_ytd":   round(bro_ytd, 2),
+            "monthly_target": goals.get("monthly_brokerage_target", 3000),
+        },
+    }
+
+    return {
+        "net_worth":        net_worth,
+        "income":           income,
+        "monthly_spending": monthly_spending,
+        "monthly_totals":   monthly_totals,
+        "latest_month":     latest_month,
+        "total_spend_latest": total_spend_latest,
+        "portfolio":        portfolio,
+        "category_colors":  category_colors,
+        "investment_goals": investment_goals,
+    }
+
+_STAGE_COLORS = {
+    "Applying":     "#888888",
+    "Applied":      "#666666",
+    "Phone Screen": "#999999",
+    "OA":           "#bbbbbb",
+    "Interview":    "#dddddd",
+    "Offer":        "#ffffff",
+    "Closed":       "#333333",
+}
+_STAGE_ORDER = list(_STAGE_COLORS)
+
+
+def _merge_dashboard():
+    """Sync data/*.json → public/data/dashboard.json so the React build is current."""
+    dash_path = os.path.join("public", "data", "dashboard.json")
+    existing = {}
+    if os.path.exists(dash_path):
+        with open(dash_path) as f:
+            existing = json.load(f)
+
+    # Finance: convert the latest snapshot if available, else preserve existing
+    snaps = sorted(glob.glob("financial_snapshot_*.json"))
+    finance = existing.get("finance", {})
+    if snaps:
+        with open(snaps[-1]) as f:
+            snap = json.load(f)
+        converted = _snapshot_to_finance(snap)
+        if converted.get("net_worth", {}).get("total", 0) > 0:
+            finance = converted
+
+    # Load recruiting
+    rec_path = os.path.join("data", "recruiting.json")
+    rec_entries = []
+    if os.path.exists(rec_path):
+        with open(rec_path) as f:
+            rec_entries = json.load(f).get("entries", [])
+    by_stage = {s: 0 for s in _STAGE_ORDER}
+    for e in rec_entries:
+        s = e.get("stage", "Applied")
+        if s in by_stage:
+            by_stage[s] += 1
+    active = sum(v for s, v in by_stage.items() if s != "Closed")
+    recruiting = {
+        "entries":      rec_entries,
+        "stats":        {"by_stage": by_stage, "active": active},
+        "stage_colors": _STAGE_COLORS,
+    }
+
+    # Load school
+    sch_path = os.path.join("data", "school.json")
+    sch_entries = []
+    if os.path.exists(sch_path):
+        with open(sch_path) as f:
+            sch_entries = json.load(f).get("entries", [])
+
+    # Load health
+    health_path = os.path.join("data", "health.json")
+    health_entries = []
+    if os.path.exists(health_path):
+        with open(health_path) as f:
+            health_entries = json.load(f).get("entries", [])
+
+    today = date.today()
+    dashboard = {
+        "updated":     today.isoformat(),
+        "month_label": today.strftime("%B %Y"),
+        "finance":     finance,
+        "recruiting":  recruiting,
+        "school":      {"entries": sch_entries},
+        "health":      {"entries": health_entries},
+    }
+
+    os.makedirs(os.path.join("public", "data"), exist_ok=True)
+    with open(dash_path, "w") as f:
+        json.dump(dashboard, f, indent=2)
+
+
+def _port_open(port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(("localhost", port)) == 0
+
+
+def _build_site():
+    _merge_dashboard()
+    subprocess.run(["npm", "run", "build"], check=True)
+    if not _port_open(_PREVIEW_PORT):
+        subprocess.Popen(
+            ["npm", "run", "preview"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+        import time; time.sleep(1)
+    webbrowser.open(f"http://localhost:{_PREVIEW_PORT}")
 
 
 def parse_args():
@@ -65,8 +287,7 @@ def main():
     accounts = args.accounts or list(ACCOUNTS.keys())
 
     if args.dashboard:
-        from site_generator import show_terminal_finance
-        show_terminal_finance()
+        print("Dashboard has moved to React/Vite. Run: npm run dev")
         return
 
     if args.csv_open:
@@ -86,8 +307,7 @@ def main():
         filename = save_snapshot(snap)
         print(f"\nSaved → {filename}")
         print("Regenerating site...")
-        generate_site()
-        webbrowser.open("file://" + os.path.abspath("index.html"))
+        _build_site()
         return
 
     # Validate requested accounts
@@ -174,8 +394,7 @@ def main():
 
     # Regenerate site after every sync
     print("\nRegenerating site...")
-    generate_site()
-    webbrowser.open("file://" + os.path.abspath("index.html"))
+    _build_site()
 
 
 if __name__ == "__main__":

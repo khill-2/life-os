@@ -1,0 +1,26 @@
+{
+  "entries": [
+    {
+      "id": "faf181d3-b723-4771-b993-251ccd68a61a",
+      "company": "Palantir",
+      "role": "Software Engineer, Internship (Dev)",
+      "stage": "Phone Screen",
+      "deadline": null,
+      "next_action": "Schedule ~20 min call with Caroline Kane (ckane@palantir.com)",
+      "last_contact": "2026-07-01",
+      "notes": "Recruiter Caroline Kane reached out re: SWE Intern (Dev / Gotham). Also option for Forward Deployed Internship (Delta) \u2014 email Caroline to switch.",
+      "created_at": "2026-07-03"
+    },
+    {
+      "id": "180ab63e-ccee-4a70-ad84-c59ab6764679",
+      "company": "Apple",
+      "role": "Software Engineering Intern",
+      "stage": "Applied",
+      "deadline": null,
+      "next_action": "Await response \u2014 follow up in 2 weeks if no reply",
+      "last_contact": "2026-06-09",
+      "notes": "Demoed Rivian project at Apple Park. Contact: Alex Pun (ak_pun@apple.com) \u2014 met in person, potential to get higher in the loop.",
+      "created_at": "2026-06-19"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import Chart from 'chart.js/auto'
 import { fmt } from '../lib/fmt'
-import { flipReveal, flipHide } from '../lib/flip'
+import { flipReveal } from '../lib/flip'
 
 const EYE_OPEN = (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -16,7 +16,6 @@ const EYE_CLOSED = (
   </svg>
 )
 
-function hide(s) { return s.replace(/\d/g, '–') }
 
 export default function Finance({ data }) {
   const [visible, setVisible] = useState(false)
@@ -56,12 +55,6 @@ export default function Finance({ data }) {
       flipReveal(taxableRef.current, taxableFmt,      1100)
       flipReveal(iraRef.current,     iraFmt,          1100)
       flipReveal(liabRef.current,    '−' + liabFmt,  1100)
-    } else {
-      flipHide(nwRef.current,      nwFmt,          700)
-      flipHide(cashRef.current,    cashFmt,        550)
-      flipHide(taxableRef.current, taxableFmt,     550)
-      flipHide(iraRef.current,     iraFmt,         550)
-      flipHide(liabRef.current,    '−' + liabFmt, 550)
     }
   }, [visible])
 
@@ -133,17 +126,17 @@ export default function Finance({ data }) {
       <div className="hero">
         <div className="hero-eyebrow">Total Net Worth</div>
         <div className="nw-row">
-          <div className="hero-value" ref={nwRef}>{hide(nwFmt)}</div>
+          <div className="hero-value" ref={nwRef} style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease' }}>{nwFmt}</div>
           <button className="nw-toggle" onClick={() => setVisible(v => !v)}>
             {visible ? EYE_OPEN : EYE_CLOSED}
           </button>
         </div>
-        <div className="hero-sub">
-          <div>Liquid Cash <span ref={cashRef}>{hide(cashFmt)}</span></div>
-          <div>Taxable Investments <span ref={taxableRef}>{hide(taxableFmt)}</span></div>
-          <div>Roth IRA <span ref={iraRef}>{hide(iraFmt)}</span></div>
+        <div className="hero-sub" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.35s ease' }}>
+          <div>Liquid Cash <span ref={cashRef}>{cashFmt}</span></div>
+          <div>Taxable Investments <span ref={taxableRef}>{taxableFmt}</span></div>
+          <div>Roth IRA <span ref={iraRef}>{iraFmt}</span></div>
           {nw.liabilities > 0 && (
-            <div style={{ color: 'var(--red)' }}>Liabilities <span ref={liabRef}>{hide('−' + liabFmt)}</span></div>
+            <div style={{ color: 'var(--red)' }}>Liabilities <span ref={liabRef}>{'−' + liabFmt}</span></div>
           )}
         </div>
       </div>

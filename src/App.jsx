@@ -12,7 +12,11 @@ export default function App() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    fetch('/data/dashboard.json')
+    if (window.__DASHBOARD_DATA__) {
+      setData(window.__DASHBOARD_DATA__)
+      return
+    }
+    fetch(import.meta.env.BASE_URL + 'data/dashboard.json')
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json() })
       .then(setData)
       .catch(e => setError(e.message))
@@ -41,7 +45,7 @@ export default function App() {
         <div style={{ padding: '80px 32px', textAlign: 'center', color: 'var(--muted)' }}>
           <div>Could not load dashboard data.</div>
           <code style={{ display: 'block', marginTop: 12, color: 'var(--muted)', fontSize: 11 }}>
-            Run: python site_generator.py
+            Run: python main.py
           </code>
         </div>
       )}
