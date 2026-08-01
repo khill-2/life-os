@@ -93,13 +93,13 @@
     },
     "category_colors": {
       "Gasoline": "#ff8c42",
-      "Restaurants": "#e07b54",
+      "Housing": "#f0c040",
       "Fees": "#999999",
       "Education": "#7ec8e3",
-      "Housing": "#f0c040",
       "Travel/Entertainment": "#5b8dd9",
-      "Supermarkets": "#c8845e",
-      "Merchandise": "#f06292"
+      "Merchandise": "#f06292",
+      "Restaurants": "#e07b54",
+      "Supermarkets": "#c8845e"
     },
     "investment_goals": {
       "roth_ira": {
@@ -152,7 +152,7 @@
         "company": "Figma",
         "role": "Software Engineering Intern",
         "stage": "Interview",
-        "deadline": null,
+        "deadline": "2026-08-10",
         "next_action": "Submit application when open \u2014 Winter: Aug 10, Summer: Sept 14",
         "last_contact": "2026-07-30",
         "notes": "Attended FigFest (July 30) \u2014 Figma early career event for Bay Area interns/new grads. Recruiters: Shelley Hernandez (shernandez@figma.com, new grad/intern), Jaelyn Brown (jbrown@figma.com, intern). Apps open: Winter Aug 10 \u00b7 Summer Sept 14.",
