@@ -92,18 +92,18 @@
       "total_gain": 8863.11
     },
     "category_colors": {
+      "Merchandise": "#f06292",
       "Fees": "#999999",
-      "Supermarkets": "#c8845e",
-      "Travel/Entertainment": "#5b8dd9",
-      "Education": "#7ec8e3",
       "Gasoline": "#ff8c42",
+      "Supermarkets": "#c8845e",
       "Housing": "#f0c040",
       "Restaurants": "#e07b54",
-      "Merchandise": "#f06292"
+      "Travel/Entertainment": "#5b8dd9",
+      "Education": "#7ec8e3"
     },
     "investment_goals": {
       "roth_ira": {
-        "contributed": 0,
+        "contributed": 4300,
         "limit": 7500
       },
       "brokerage": {

@@ -153,14 +153,15 @@ def _snapshot_to_finance(snap: dict) -> dict:
     )
 
     goals = snap.get("investment_goals", {})
+    roth  = goals.get("roth_ira", {})
     investment_goals = {
         "roth_ira": {
-            "contributed": goals.get("roth_ira_2026_contributed", 0),
-            "limit":       7500,
+            "contributed": roth.get("contributed", 0),
+            "limit":       roth.get("limit", 7000),
         },
         "brokerage": {
             "invested_ytd":   round(bro_ytd, 2),
-            "monthly_target": goals.get("monthly_brokerage_target", 3000),
+            "monthly_target": goals.get("brokerage", {}).get("monthly_target", 3000),
         },
     }
 
