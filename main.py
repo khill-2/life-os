@@ -29,26 +29,48 @@ from json_writer import write_recruiting, write_school, write_health_backfill
 _PREVIEW_PORT = 4173
 
 _CATEGORY_COLORS = {
-    "Food & Dining":         "#e07b54",
-    "Restaurants":           "#e07b54",
-    "Supermarkets":          "#e07b54",
-    "Travel/ Entertainment": "#5b8dd9",
-    "Travel":                "#5b8dd9",
-    "Entertainment":         "#9b59b6",
-    "Housing":               "#f0c040",
-    "Insurance":             "#50c878",
-    "Workspace":             "#80cbc4",
-    "Gas":                   "#ff8c42",
-    "Shopping":              "#f06292",
-    "Health":                "#26a69a",
-    "Subscriptions":         "#78909c",
-    "Other":                 "#999999",
+    "Food & Dining":          "#e07b54",
+    "Food & Drink":           "#e07b54",
+    "Restaurants":            "#e07b54",
+    "Supermarkets":           "#c8845e",
+    "Travel/Entertainment":   "#5b8dd9",
+    "Travel/ Entertainment":  "#5b8dd9",
+    "Travel":                 "#5b8dd9",
+    "Entertainment":          "#9b59b6",
+    "Housing":                "#f0c040",
+    "Insurance":              "#50c878",
+    "Workspace":              "#80cbc4",
+    "Gas":                    "#ff8c42",
+    "Gasoline":               "#ff8c42",
+    "Shopping":               "#f06292",
+    "Merchandise":            "#f06292",
+    "Health":                 "#26a69a",
+    "Subscriptions":          "#78909c",
+    "Education":              "#7ec8e3",
+    "Other":                  "#999999",
 }
 
 _SPEND_SKIP_CATEGORIES = {
     "payments and credits", "payment", "transfer", "transfers",
     "fees & adjustments", "rewards", "cashback",
 }
+
+# Description substrings → override category (case-insensitive, checked before bank category)
+import re as _re
+_DESCRIPTION_OVERRIDES: list[tuple] = [
+    (_re.compile(r"rent",       _re.I), "Housing"),
+    (_re.compile(r"grocery|grocer|whole foods|trader joe|safeway|kroger|albertsons", _re.I), "Supermarkets"),
+    (_re.compile(r"netflix|spotify|hulu|disney\+|apple\.com/bill|youtube premium|amazon prime", _re.I), "Subscriptions"),
+    (_re.compile(r"lyft|uber(?! eats)|taxi|mta|lirr|bart|caltrain|amtrak", _re.I), "Travel/Entertainment"),
+    (_re.compile(r"uber eats|doordash|grubhub|instacart", _re.I), "Restaurants"),
+    (_re.compile(r"cvs|walgreens|rite aid|pharmacy", _re.I), "Health"),
+]
+
+def _override_category(description: str, category: str) -> str:
+    for pattern, override in _DESCRIPTION_OVERRIDES:
+        if pattern.search(description):
+            return override
+    return category
 
 
 def _snapshot_to_finance(snap: dict) -> dict:
@@ -70,18 +92,21 @@ def _snapshot_to_finance(snap: dict) -> dict:
         "source":          inc.get("source", ""),
     }
 
-    # Monthly spending from credit card + checking transactions
+    # Monthly spending from credit card transactions
+    # Different banks use opposite sign conventions (Chase: negative=purchase; Discover: positive=purchase)
+    # So we filter by category presence (payments have empty/skip categories) and take abs(amt).
     monthly_spending: dict[str, dict[str, float]] = {}
     skip_types = {"checking", "savings", "taxable_brokerage", "roth_ira"}
     for acct in snap.get("accounts", {}).values():
         if acct.get("type") in skip_types:
             continue
         for t in acct.get("transactions", []):
-            amt = t.get("amount", 0)
-            if amt <= 0:
+            cat = t.get("category", "")
+            cat = _override_category(t.get("description", ""), cat)
+            if not cat or cat.lower() in _SPEND_SKIP_CATEGORIES:
                 continue
-            cat = t.get("category", "Other")
-            if cat.lower() in _SPEND_SKIP_CATEGORIES:
+            amt = abs(t.get("amount", 0))
+            if amt == 0:
                 continue
             month = t["date"][:7]  # "YYYY-MM"
             monthly_spending.setdefault(month, {})
@@ -158,6 +183,7 @@ _STAGE_COLORS = {
     "OA":           "#bbbbbb",
     "Interview":    "#dddddd",
     "Offer":        "#ffffff",
+    "Rejected":     "#3a2020",
     "Closed":       "#333333",
 }
 _STAGE_ORDER = list(_STAGE_COLORS)
@@ -258,6 +284,8 @@ def parse_args():
     p.add_argument("--dashboard", action="store_true", help="Print terminal finance dashboard and exit.")
     p.add_argument("--csv",       action="store_true", help="Parse CSV exports from csv_imports/ and regenerate finance dashboard.")
     p.add_argument("--csv-open",  action="store_true", help="Open each bank's download page in the browser, then exit.")
+    p.add_argument("--api",       action="store_true", help="Fetch live data from Teller + SnapTrade and regenerate dashboard.")
+    p.add_argument("--api-link",  action="store_true", help="Link bank/brokerage accounts via Teller Connect + SnapTrade portal.")
     return p.parse_args()
 
 
@@ -293,6 +321,26 @@ def main():
     if args.csv_open:
         from csv_scraper import open_bank_sites
         open_bank_sites()
+        return
+
+    if getattr(args, "api_link", False):
+        from api_scraper import link_teller, link_snaptrade
+        link_teller()
+        link_snaptrade()
+        return
+
+    if getattr(args, "api", False):
+        from api_scraper import generate_snapshot as api_generate, save_snapshot as api_save
+        existing_snap = {}
+        existing_files = sorted(glob.glob("financial_snapshot_*.json"))
+        if existing_files:
+            with open(existing_files[-1]) as f:
+                existing_snap = json.load(f)
+        snap = api_generate(existing_snap)
+        filename = api_save(snap)
+        print(f"\nSaved → {filename}")
+        print("Regenerating site...")
+        _build_site()
         return
 
     if args.csv:

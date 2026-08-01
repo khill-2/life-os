@@ -8,7 +8,7 @@
       "deadline": null,
       "next_action": "Schedule ~20 min call with Caroline Kane (ckane@palantir.com)",
       "last_contact": "2026-07-01",
-      "notes": "Recruiter Caroline Kane reached out re: SWE Intern (Dev / Gotham). Also option for Forward Deployed Internship (Delta) \u2014 email Caroline to switch.",
+      "notes": "Recruiter Caroline Kane reached out re: SWE Intern (Dev / Gotham). Also option for Forward Deployed Internship (Delta) — email Caroline to switch.",
       "created_at": "2026-07-03"
     },
     {
@@ -17,10 +17,87 @@
       "role": "Software Engineering Intern",
       "stage": "Applied",
       "deadline": null,
-      "next_action": "Await response \u2014 follow up in 2 weeks if no reply",
+      "next_action": "Await response — follow up in 2 weeks if no reply",
       "last_contact": "2026-06-09",
-      "notes": "Demoed Rivian project at Apple Park. Contact: Alex Pun (ak_pun@apple.com) \u2014 met in person, potential to get higher in the loop.",
+      "notes": "Demoed Rivian project at Apple Park. Contact: Alex Pun (ak_pun@apple.com) — met in person, potential to get higher in the loop.",
       "created_at": "2026-06-19"
+    },
+    {
+      "id": "27e8c8b1-83cc-486f-b29d-e273a2bcbdff",
+      "company": "Akuna Capital",
+      "role": "Software Engineering Intern (Python)",
+      "stage": "Applied",
+      "deadline": null,
+      "next_action": "Await response — follow up in 2 weeks if no reply",
+      "last_contact": "2026-07-14",
+      "notes": "Applied for Software Engineer Intern - Python, Summer 2027. Application received and under review.",
+      "created_at": "2026-07-22"
+    },
+    {
+      "id": "6d715cd9-a10f-4a74-a92f-815caaefdff3",
+      "company": "Figma",
+      "role": "Software Engineering Intern",
+      "stage": "Interview",
+      "deadline": null,
+      "next_action": "Submit application when open — Winter: Aug 10, Summer: Sept 14",
+      "last_contact": "2026-07-30",
+      "notes": "Attended FigFest (July 30) — Figma early career event for Bay Area interns/new grads. Recruiters: Shelley Hernandez (shernandez@figma.com, new grad/intern), Jaelyn Brown (jbrown@figma.com, intern). Apps open: Winter Aug 10 · Summer Sept 14.",
+      "created_at": "2026-07-22"
+    },
+    {
+      "id": "556549ec-20d9-44c5-a918-3be6b1e23663",
+      "company": "NVIDIA",
+      "role": "Software Engineering Intern",
+      "stage": "Rejected",
+      "deadline": null,
+      "next_action": null,
+      "last_contact": "2026-07-15",
+      "notes": "Intern recruiting season complete for this cycle.",
+      "created_at": "2026-07-22"
+    },
+    {
+      "id": "baab413d-1053-4387-a295-ab226ce010aa",
+      "company": "Tesla",
+      "role": "System Software Engineer, Graphics (Summer 2026)",
+      "stage": "Rejected",
+      "deadline": null,
+      "next_action": null,
+      "last_contact": "2026-07-02",
+      "notes": "High volume of applications received — not selected.",
+      "created_at": "2026-07-22"
+    },
+    {
+      "id": "be2bf8ec-a83a-4434-9424-33c76133499d",
+      "company": "Cloudflare",
+      "role": "Software Engineer Intern (Summer 2026)",
+      "stage": "Rejected",
+      "deadline": null,
+      "next_action": null,
+      "last_contact": "2026-06-18",
+      "notes": "Position no longer open.",
+      "created_at": "2026-07-22"
+    },
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "company": "Roblox",
+      "role": "Software Engineering Intern",
+      "stage": "Applying",
+      "deadline": null,
+      "next_action": "Submit application",
+      "last_contact": null,
+      "notes": "Recruiter: Nicole Atkins (natkins@roblox.com).",
+      "created_at": "2026-07-31"
+    },
+    {
+      "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+      "company": "Stripe",
+      "role": "Software Engineering Intern",
+      "stage": "Applying",
+      "deadline": null,
+      "next_action": "Submit application",
+      "last_contact": null,
+      "notes": "Recruiter: Bethany Adams (bethanyadams@stripe.com).",
+      "created_at": "2026-08-01"
     }
   ]
 }

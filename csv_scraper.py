@@ -189,6 +189,7 @@ CATEGORY_MAP = {
     "Gas/Automotive":         "Gasoline",
     "Gasoline":               "Gasoline",
     "Travel":                 "Travel/Entertainment",
+    "Travel/ Entertainment":  "Travel/Entertainment",
     "Entertainment":          "Travel/Entertainment",
     "Health/Medical":         "Medical Services",
     "Medical Services":       "Medical Services",
@@ -233,6 +234,16 @@ def _money(s: str) -> float:
         return float(cleaned or 0)
     except ValueError:
         return 0.0
+
+
+def _ci(row: dict, *keys: str) -> str:
+    """Case-insensitive dict lookup across multiple key candidates."""
+    row_lower = {k.lower(): v for k, v in row.items() if k is not None}
+    for k in keys:
+        v = row_lower.get(k.lower())
+        if v is not None:
+            return v
+    return ""
 
 
 # ── Bank parsers ──────────────────────────────────────────────────────────────
@@ -370,17 +381,27 @@ def parse_schwab_positions() -> dict:
 
     positions = []
     total_value = total_cost = total_gain = 0.0
+    cash = 0.0
 
     for row in reader:
         symbol = (row.get("Symbol") or "").strip().strip('"')
-        skip = {"--", "Cash & Cash Investments", "Account Total", "Positions Total", ""}
+        skip = {"--", "Account Total", "Positions Total", ""}
         if not symbol or symbol in skip:
             continue
+
+        mv_raw = row.get("Mkt Val (Market Value)") or row.get("Market Value") or row.get("Mkt Val") or ""
+        mv = _money(mv_raw)
+
+        # Cash row: track separately so it contributes to total_value but not positions
+        if symbol == "Cash & Cash Investments":
+            cash = mv
+            total_value += mv
+            continue
+
         if not any(c.isalpha() for c in symbol):
             continue
 
         # Schwab column names contain full names in parens: "Mkt Val (Market Value)"
-        mv   = _money(row.get("Mkt Val (Market Value)") or row.get("Market Value") or row.get("Mkt Val") or "")
         cost = _money(row.get("Cost Basis") or "")
         qty  = _money(row.get("Qty (Quantity)") or row.get("Quantity") or row.get("Qty") or "0")
         price = _money(row.get("Price") or "")
@@ -408,6 +429,7 @@ def parse_schwab_positions() -> dict:
 
     return {
         "positions":           sorted(positions, key=lambda x: -x["market_value"]),
+        "cash":                round(cash, 2),
         "total_value":         round(total_value, 2),
         "total_cost_basis":    round(total_cost, 2),
         "total_gain_loss":     round(total_gain, 2),
@@ -428,6 +450,18 @@ def parse_fidelity_positions() -> dict:
     with open(path, newline="", encoding="utf-8-sig") as f:
         raw_lines = f.read().splitlines()
 
+    # Extract download date from footer line like "Date downloaded Jul-22-2026 ..."
+    import re as _re
+    value_date = str(date.today())
+    for line in raw_lines:
+        m = _re.search(r"Date downloaded\s+(\w+-\d+-\d+)", line)
+        if m:
+            try:
+                value_date = str(datetime.strptime(m.group(1), "%b-%d-%Y").date())
+            except ValueError:
+                pass
+            break
+
     start = next((i for i, l in enumerate(raw_lines) if "Symbol" in l and "Account" in l), 0)
     reader = csv.DictReader(raw_lines[start:])
 
@@ -441,10 +475,10 @@ def parse_fidelity_positions() -> dict:
         if not any(c.isalpha() for c in symbol):
             continue
 
-        mv    = _money(row.get("Current Value") or row.get("Market Value") or "")
-        cost  = _money(row.get("Cost Basis Total") or row.get("Cost Basis") or "")
-        qty   = _money(row.get("Quantity") or "0")
-        price = _money(row.get("Last Price") or "")
+        mv    = _money(_ci(row, "Current Value", "Market Value"))
+        cost  = _money(_ci(row, "Cost Basis Total", "Cost Basis"))
+        qty   = _money(_ci(row, "Quantity") or "0")
+        price = _money(_ci(row, "Last Price"))
         gain  = round(mv - cost, 2)
         gain_pct = round((gain / cost * 100) if cost else 0, 2)
 
@@ -473,6 +507,7 @@ def parse_fidelity_positions() -> dict:
         "total_cost_basis":    round(total_cost, 2),
         "total_gain_loss":     round(total_gain, 2),
         "total_gain_loss_pct": round((total_gain / total_cost * 100) if total_cost else 0, 2),
+        "value_date":          value_date,
     }
 
 
@@ -556,6 +591,36 @@ def generate_snapshot(existing_snap: dict | None = None) -> dict:
     if not income["deposits"]:
         income = existing.get("income_summary", income)
 
+    # ── Investment goals (migrate flat → nested if needed) ────────────────────
+    existing_ig = existing.get("investment_goals", {})
+    # Migrate legacy flat keys if nested keys not yet present
+    if "roth_ira" not in existing_ig and "brokerage" not in existing_ig:
+        existing_ig = {
+            "roth_ira":  {"limit": 7000, "contributed": existing_ig.get("roth_ira_2026_contributed", 0)},
+            "brokerage": {"monthly_target": existing_ig.get("monthly_brokerage_target", 3000), "invested_ytd": 0},
+        }
+
+    # Auto-calculate brokerage YTD from Schwab buy transactions
+    schwab_buys_ytd = sum(
+        abs(t["amount"]) for t in accounts.get("schwab_brokerage", {}).get("transactions_ytd", [])
+        if t.get("action", "").lower() == "buy"
+    )
+    if schwab_buys_ytd > 0:
+        existing_ig.setdefault("brokerage", {})["invested_ytd"] = round(schwab_buys_ytd, 2)
+
+    # Auto-populate Chase signup bonus current_spend by summing all purchase transactions
+    chase_acct = accounts.get("chase_sapphire_preferred", {})
+    chase_bonus_src = chase_acct.get("signup_bonus")
+    if chase_bonus_src:
+        chase_spend = round(sum(
+            abs(t["amount"]) for t in chase_acct.get("transactions", [])
+            if t.get("amount", 0) < 0  # negative = purchase
+        ), 2)
+        existing_ig["chase_bonus"] = {
+            **chase_bonus_src,
+            "current_spend": chase_spend,
+        }
+
     return {
         "snapshot_date": str(date.today()),
         "owner":         "Keller C. Hill",
@@ -569,10 +634,7 @@ def generate_snapshot(existing_snap: dict | None = None) -> dict:
         },
         "accounts":           accounts,
         "income_summary":     income,
-        "investment_goals":   existing.get("investment_goals", {
-            "roth_ira_2026_contributed": 0,
-            "monthly_brokerage_target":  3000,
-        }),
+        "investment_goals":   existing_ig,
         "recurring_expenses": existing.get("recurring_expenses", {}),
     }
 

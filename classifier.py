@@ -73,6 +73,29 @@ def _extract_ats_company(domain: str, sender: str, subject: str) -> Optional[str
 
     return None
 
+_REJECTION_SIGNALS = [
+    "we will not be moving forward",
+    "won't be moving forward",
+    "not moving forward",
+    "decided not to move forward",
+    "have decided to move forward with other candidates",
+    "other candidates whose experience",
+    "high volume of applications",
+    "unfortunately, we",
+    "unfortunately we ",
+    "we are no longer hiring",
+    "no longer accepting applications",
+    "position has been filled",
+    "we've filled the position",
+    "recruiting season is now complete",
+    "we won't be pursuing",
+    "not selected for",
+    "we're unable to move",
+    "we are unable to move",
+    "not a match",
+    "not the right fit",
+]
+
 _PROMO_SIGNALS = [
     "% off", "sale", "deal", "discount", "coupon", "offer from",
     "daily digest", "workday inbox",
@@ -104,6 +127,11 @@ _GENERIC_OUTREACH = re.compile(
 
 def _is_generic_outreach(subject: str, snippet: str = "") -> bool:
     return bool(_GENERIC_OUTREACH.search(subject) or _GENERIC_OUTREACH.search(snippet))
+
+
+def _is_rejection(subject: str, snippet: str, body: str) -> bool:
+    combined = (subject + " " + snippet + " " + body[:500]).lower()
+    return any(sig in combined for sig in _REJECTION_SIGNALS)
 
 
 # ---------------------------------------------------------------------------
@@ -169,6 +197,9 @@ _COMPANY_OVERRIDES = {
     "boeing": "Boeing",
     "gemini": "Gemini",
     "invesco": "Invesco",
+    "akunacapital": "Akuna Capital",
+    "akuna": "Akuna Capital",
+    "figma": "Figma",
 }
 
 
@@ -251,18 +282,26 @@ def _extract_role(subject: str, body: str) -> str:
         m = re.search(pattern, subject, re.IGNORECASE)
         if m:
             role = m.group(1).strip().rstrip(".")
+            # Reject if it looks like a sentence fragment (starts with common words, not a role title)
+            _SENTENCE_STARTS = {"thank", "we", "your", "our", "the", "i ", "you", "hi ", "hello"}
+            if any(role.lower().startswith(w) for w in _SENTENCE_STARTS):
+                continue
             if len(role) < 80 and role and role[0].isupper() and len(role.split()) >= 2:
                 return role
 
-    # Fall back to body — stricter to avoid sentence fragments
+    # Body: look for explicit "position" / "role" / "applying for" context first
     body_patterns = [
         r"(?:position|role|opening|opportunity)\s*[:\-]?\s*([A-Z][^\n,.]{3,60})",
+        r"(?:applying for|applied for|interest in the|for the)\s+([A-Z][^\n,.]{3,60}(?:Intern|Engineer|Developer|Analyst|Scientist)[^\n,.]{0,25})",
         r"([A-Z][^\n,]*?(?:Intern|Engineer|Developer|Analyst|Scientist)[^\n,]{0,25})",
     ]
     for pattern in body_patterns:
         m = re.search(pattern, body)  # no IGNORECASE — require uppercase start
         if m:
             role = m.group(1).strip()
+            _SENTENCE_STARTS = {"Thank", "We", "Your", "Our", "The", "Hi", "Hello", "I ", "You"}
+            if any(role.startswith(w) for w in _SENTENCE_STARTS):
+                continue
             if len(role) < 70 and "." not in role and 2 <= len(role.split()) <= 8:
                 return role
     return ""
@@ -338,10 +377,11 @@ def classify_recruiting(email: dict) -> Optional[dict]:
     if not company:
         return None
 
+    rejected  = _is_rejection(subject, snippet, email["body"])
     role      = _extract_role(subject, email["body"])
-    stage     = _infer_stage(combined)
+    stage     = "Rejected" if rejected else _infer_stage(combined)
     last_date = email["date"].date().isoformat() if email.get("date") else None
-    deadline  = _extract_date(email["body"])
+    deadline  = None if rejected else _extract_date(email["body"])
 
     return {
         "company":      company,

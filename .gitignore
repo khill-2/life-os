@@ -10,5 +10,9 @@ __pycache__/
 venv/
 .claude/
 csv_imports/*.csv
+teller_tokens.json
+teller_certificate.pem
+teller_private_key.pem
+snaptrade_creds.json
 node_modules/
 dist/
