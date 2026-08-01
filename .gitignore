@@ -10,6 +10,7 @@ __pycache__/
 venv/
 .claude/
 csv_imports/*.csv
+financial_snapshot_*.json
 teller_tokens.json
 teller_certificate.pem
 teller_private_key.pem
