@@ -89,6 +89,17 @@
       "created_at": "2026-07-31"
     },
     {
+      "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+      "company": "Datadog",
+      "role": "Software Engineering Intern",
+      "stage": "Applying",
+      "deadline": null,
+      "next_action": "Coffee chat with Neal Turett — ask about intern process/recruiting",
+      "last_contact": null,
+      "notes": "Neal Turett (turettn@gmail.com) — frat alum, CE background, SWE at Datadog. Coffee chat scheduled.",
+      "created_at": "2026-08-01"
+    },
+    {
       "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
       "company": "Stripe",
       "role": "Software Engineering Intern",
