@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
-Life OS — cold-start population script.
+Life OS — Gmail scraper and dashboard builder.
 
 Scrapes Gmail (personal + school) for recruiting, finance, and school signals,
-then writes structured entries into the corresponding Notion databases.
-Also backfills the Health Log with the past 7 days.
+writes structured entries into local data/*.json files, and rebuilds the site.
 
 Usage:
-    python main.py             # live run (writes to Notion)
-    python main.py --dry-run   # preview only, no API writes
+    python main.py             # live run
+    python main.py --dry-run   # preview only, no writes
 """
 
 import argparse
@@ -275,8 +274,8 @@ def _build_site():
 
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Populate Life OS Notion databases from Gmail.")
-    p.add_argument("--dry-run",   action="store_true", help="Print what would be written without calling Notion.")
+    p = argparse.ArgumentParser(description="Scrape Gmail and rebuild the Life OS dashboard.")
+    p.add_argument("--dry-run",   action="store_true", help="Print what would be written without making any changes.")
     p.add_argument("--since",     type=int, default=None, metavar="DAYS",
                    help="Only look at emails from the last N days (default: all).")
     p.add_argument("--accounts",  nargs="+", default=None, metavar="ACCOUNT",
@@ -285,8 +284,6 @@ def parse_args():
     p.add_argument("--dashboard", action="store_true", help="Print terminal finance dashboard and exit.")
     p.add_argument("--csv",       action="store_true", help="Parse CSV exports from csv_imports/ and regenerate finance dashboard.")
     p.add_argument("--csv-open",  action="store_true", help="Open each bank's download page in the browser, then exit.")
-    p.add_argument("--api",       action="store_true", help="Fetch live data from Teller + SnapTrade and regenerate dashboard.")
-    p.add_argument("--api-link",  action="store_true", help="Link bank/brokerage accounts via Teller Connect + SnapTrade portal.")
     return p.parse_args()
 
 
@@ -324,26 +321,6 @@ def main():
         open_bank_sites()
         return
 
-    if getattr(args, "api_link", False):
-        from api_scraper import link_teller, link_snaptrade
-        link_teller()
-        link_snaptrade()
-        return
-
-    if getattr(args, "api", False):
-        from api_scraper import generate_snapshot as api_generate, save_snapshot as api_save
-        existing_snap = {}
-        existing_files = sorted(glob.glob("financial_snapshot_*.json"))
-        if existing_files:
-            with open(existing_files[-1]) as f:
-                existing_snap = json.load(f)
-        snap = api_generate(existing_snap)
-        filename = api_save(snap)
-        print(f"\nSaved → {filename}")
-        print("Regenerating site...")
-        _build_site()
-        return
-
     if args.csv:
         from csv_scraper import generate_snapshot, save_snapshot
         print("Parsing CSV exports from csv_imports/...")
@@ -366,7 +343,7 @@ def main():
         sys.exit(1)
 
     if dry_run:
-        print("=== DRY RUN MODE — nothing will be written to Notion ===\n")
+        print("=== DRY RUN MODE — nothing will be written ===\n")
     if args.since:
         print(f"Looking back {args.since} days only.\n")
 
@@ -411,7 +388,7 @@ def main():
     print(f"\nClassified: {len(recruiting_entries)} recruiting, {len(school_entries)} school\n")
 
     # ------------------------------------------------------------------
-    # Step 2 — Write to Notion
+    # Step 2 — Write to local JSON
     # ------------------------------------------------------------------
     total_skipped = 0
 

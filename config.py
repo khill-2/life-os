@@ -1,17 +1,4 @@
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-NOTION_TOKEN = os.getenv("NOTION_TOKEN")
-
-# Database IDs (from Notion URLs)
-DB_RECRUITING  = "58e58f54-eb83-43ab-85f4-54b4d76071dd"
-DB_SCHOOL      = "123cdb23-81a2-48e1-8a29-6c86233dd8b6"
-DB_HEALTH      = "a3c1a3cc-b9fd-45d6-ab8d-6b05408ca461"
-
-# Entries already in Notion — skip these during deduplication
-SEEDED_RECRUITING = {"amazon", "spacex", "microsoft", "hpe", "notion"}
+import re as _re
 
 # Gmail search queries per category
 GMAIL_QUERIES = {
