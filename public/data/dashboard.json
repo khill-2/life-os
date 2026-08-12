@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-01",
+  "updated": "2026-08-11",
   "month_label": "August 2026",
   "finance": {
     "net_worth": {
@@ -92,14 +92,14 @@
       "total_gain": 8863.11
     },
     "category_colors": {
-      "Gasoline": "#ff8c42",
       "Housing": "#f0c040",
-      "Fees": "#999999",
-      "Education": "#7ec8e3",
       "Travel/Entertainment": "#5b8dd9",
-      "Merchandise": "#f06292",
+      "Education": "#7ec8e3",
       "Restaurants": "#e07b54",
-      "Supermarkets": "#c8845e"
+      "Gasoline": "#ff8c42",
+      "Supermarkets": "#c8845e",
+      "Merchandise": "#f06292",
+      "Fees": "#999999"
     },
     "investment_goals": {
       "roth_ira": {
@@ -223,11 +223,22 @@
         "last_contact": null,
         "notes": "Recruiter: Bethany Adams (bethanyadams@stripe.com).",
         "created_at": "2026-08-01"
+      },
+      {
+        "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+        "company": "SpaceX",
+        "role": "Software Engineering Intern",
+        "stage": "Applying",
+        "deadline": null,
+        "next_action": "Submit application",
+        "last_contact": null,
+        "notes": "Recruiter: Christina Knighton (christina.knighton@spacex.com).",
+        "created_at": "2026-08-01"
       }
     ],
     "stats": {
       "by_stage": {
-        "Applying": 3,
+        "Applying": 4,
         "Applied": 2,
         "Phone Screen": 1,
         "OA": 0,
@@ -236,7 +247,7 @@
         "Rejected": 3,
         "Closed": 0
       },
-      "active": 10
+      "active": 11
     },
     "stage_colors": {
       "Applying": "#888888",
