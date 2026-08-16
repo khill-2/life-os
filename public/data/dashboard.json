@@ -1,95 +1,83 @@
 {
-  "updated": "2026-08-11",
-  "month_label": "August 2026",
+  "updated": "2026-03-14",
+  "month_label": "March 2026",
   "finance": {
     "net_worth": {
-      "total": 53856.66,
-      "liabilities": 885.06,
-      "cash": 4502.92,
-      "taxable": 43030.47,
-      "ira": 6323.27
+      "total": 41283.50,
+      "liabilities": 1240.15,
+      "cash": 3180.42,
+      "taxable": 30802.91,
+      "ira": 7300.17
     },
     "income": {
-      "avg_monthly_net": 6912.99,
-      "ytd_net": 6381.22,
+      "avg_monthly_net": 5847.00,
+      "ytd_net": 11694.00,
       "source": "Auto-detected from savings deposits"
     },
     "monthly_spending": {
-      "2026-06": {
-        "Travel/Entertainment": 20.0,
-        "Restaurants": 84.05,
-        "Supermarkets": 32.04,
-        "Education": 15.0
+      "2026-01": {
+        "Restaurants": 127.45,
+        "Supermarkets": 88.20,
+        "Gasoline": 42.10,
+        "Education": 15.00
       },
-      "2026-05": {
-        "Supermarkets": 55.25,
-        "Restaurants": 14.51,
-        "Fees": 30.0,
-        "Education": 15.0
+      "2026-02": {
+        "Restaurants": 94.60,
+        "Supermarkets": 110.33,
+        "Travel/Entertainment": 340.00,
+        "Fees": 30.00,
+        "Education": 15.00
       },
-      "2026-07": {
-        "Travel/Entertainment": 284.25,
-        "Restaurants": 192.02,
-        "Supermarkets": 1.04,
-        "Gasoline": 6.51,
-        "Merchandise": 330.33,
-        "Housing": 2073.6
+      "2026-03": {
+        "Housing": 1850.00,
+        "Restaurants": 215.80,
+        "Supermarkets": 67.44,
+        "Merchandise": 189.99,
+        "Gasoline": 38.20
       }
     },
     "monthly_totals": {
-      "2026-06": 151.09,
-      "2026-05": 114.76,
-      "2026-07": 2887.75
+      "2026-01": 272.75,
+      "2026-02": 589.93,
+      "2026-03": 2361.43
     },
-    "latest_month": "2026-07",
-    "total_spend_latest": 2887.75,
+    "latest_month": "2026-03",
+    "total_spend_latest": 2361.43,
     "portfolio": {
       "positions": [
         {
-          "symbol": "VOO",
-          "value": 24671.43,
-          "gain": 1882.11,
-          "gain_pct": 8.26
+          "symbol": "VTI",
+          "value": 18420.55,
+          "gain": 2140.22,
+          "gain_pct": 13.14
         },
         {
-          "symbol": "SPY",
-          "value": 10478.02,
-          "gain": 3849.05,
-          "gain_pct": 58.06
-        },
-        {
-          "symbol": "SWPPX",
-          "value": 4017.18,
-          "gain": 656.21,
-          "gain_pct": 19.52
+          "symbol": "QQQ",
+          "value": 7850.30,
+          "gain": 1920.45,
+          "gain_pct": 32.41
         },
         {
           "symbol": "VXUS",
-          "value": 1005.77,
-          "gain": 5.77,
-          "gain_pct": 0.58
+          "value": 2310.88,
+          "gain": 110.88,
+          "gain_pct": 5.04
         },
         {
-          "symbol": "VOO",
-          "value": 4056.19,
-          "gain": 742.89,
-          "gain_pct": 22.42
+          "symbol": "BND",
+          "value": 1021.18,
+          "gain": -78.82,
+          "gain_pct": -7.16
         },
         {
-          "symbol": "SPAXX",
-          "value": 1500.82,
-          "gain": 1500.82,
-          "gain_pct": 0
-        },
-        {
-          "symbol": "FXAIX",
-          "value": 766.26,
-          "gain": 226.26,
-          "gain_pct": 41.9
+          "symbol": "FSKAX",
+          "value": 7300.17,
+          "gain": 1100.17,
+          "gain_pct": 17.74
         }
       ],
-      "total": 46495.67,
-      "total_gain": 8863.11
+      "total": 36903.08,
+      "total_gain": 5192.90
     },
     "category_colors": {
       "Housing": "#f0c040",
@@ -103,151 +91,129 @@
     },
     "investment_goals": {
       "roth_ira": {
-        "contributed": 4300,
-        "limit": 7500
+        "contributed": 3500,
+        "limit": 7000
       },
       "brokerage": {
-        "invested_ytd": 25800.0,
-        "monthly_target": 3000
+        "invested_ytd": 18000.0,
+        "monthly_target": 2500
       }
     }
   },
   "recruiting": {
     "entries": [
       {
-        "id": "faf181d3-b723-4771-b993-251ccd68a61a",
-        "company": "Palantir",
-        "role": "Software Engineer, Internship (Dev)",
-        "stage": "Phone Screen",
-        "deadline": null,
-        "next_action": "Schedule ~20 min call with Caroline Kane (ckane@palantir.com)",
-        "last_contact": "2026-07-01",
-        "notes": "Recruiter Caroline Kane reached out re: SWE Intern (Dev / Gotham). Also option for Forward Deployed Internship (Delta) \u2014 email Caroline to switch.",
-        "created_at": "2026-07-03"
-      },
-      {
-        "id": "180ab63e-ccee-4a70-ad84-c59ab6764679",
-        "company": "Apple",
+        "id": "demo-0001",
+        "company": "Confluent",
         "role": "Software Engineering Intern",
-        "stage": "Applied",
-        "deadline": null,
-        "next_action": "Await response \u2014 follow up in 2 weeks if no reply",
-        "last_contact": "2026-06-09",
-        "notes": "Demoed Rivian project at Apple Park. Contact: Alex Pun (ak_pun@apple.com) \u2014 met in person, potential to get higher in the loop.",
-        "created_at": "2026-06-19"
+        "stage": "Offer",
+        "deadline": "2026-03-20",
+        "next_action": "Review offer details and respond by deadline",
+        "last_contact": "2026-03-08",
+        "notes": "Received formal offer. Evaluating package — engineering team match is distributed systems.",
+        "created_at": "2026-01-15"
       },
       {
-        "id": "27e8c8b1-83cc-486f-b29d-e273a2bcbdff",
-        "company": "Akuna Capital",
-        "role": "Software Engineering Intern (Python)",
-        "stage": "Applied",
-        "deadline": null,
-        "next_action": "Await response \u2014 follow up in 2 weeks if no reply",
-        "last_contact": "2026-07-14",
-        "notes": "Applied for Software Engineer Intern - Python, Summer 2027. Application received and under review.",
-        "created_at": "2026-07-22"
-      },
-      {
-        "id": "6d715cd9-a10f-4a74-a92f-815caaefdff3",
-        "company": "Figma",
+        "id": "demo-0002",
+        "company": "Airbnb",
         "role": "Software Engineering Intern",
         "stage": "Interview",
-        "deadline": "2026-08-10",
-        "next_action": "Submit application when open \u2014 Winter: Aug 10, Summer: Sept 14",
-        "last_contact": "2026-07-30",
-        "notes": "Attended FigFest (July 30) \u2014 Figma early career event for Bay Area interns/new grads. Recruiters: Shelley Hernandez (shernandez@figma.com, new grad/intern), Jaelyn Brown (jbrown@figma.com, intern). Apps open: Winter Aug 10 \u00b7 Summer Sept 14.",
-        "created_at": "2026-07-22"
+        "deadline": null,
+        "next_action": "Prepare for final round — system design + coding",
+        "last_contact": "2026-03-05",
+        "notes": "Cleared OA and phone screen. Final round scheduled for week of Mar 17.",
+        "created_at": "2026-01-22"
       },
       {
-        "id": "556549ec-20d9-44c5-a918-3be6b1e23663",
-        "company": "NVIDIA",
+        "id": "demo-0003",
+        "company": "Snowflake",
+        "role": "Software Engineering Intern",
+        "stage": "Phone Screen",
+        "deadline": null,
+        "next_action": "Prep LeetCode medium — recruiter mentioned DSA focus",
+        "last_contact": "2026-02-28",
+        "notes": "Recruiter reached out via LinkedIn. Phone screen scheduled.",
+        "created_at": "2026-02-20"
+      },
+      {
+        "id": "demo-0004",
+        "company": "MongoDB",
+        "role": "Software Engineering Intern",
+        "stage": "OA",
+        "deadline": "2026-03-18",
+        "next_action": "Complete OA by deadline",
+        "last_contact": "2026-03-10",
+        "notes": "OA received after application. 90-minute window, two coding problems.",
+        "created_at": "2026-02-10"
+      },
+      {
+        "id": "demo-0005",
+        "company": "HashiCorp",
+        "role": "Software Engineering Intern",
+        "stage": "Applied",
+        "deadline": null,
+        "next_action": "Await response — follow up in 2 weeks if no reply",
+        "last_contact": "2026-02-14",
+        "notes": "Applied via portal. Interest in infrastructure/DevOps team.",
+        "created_at": "2026-02-14"
+      },
+      {
+        "id": "demo-0006",
+        "company": "Twilio",
+        "role": "Software Engineering Intern",
+        "stage": "Applied",
+        "deadline": null,
+        "next_action": "Await response",
+        "last_contact": "2026-02-20",
+        "notes": "Applied to developer experience team opening.",
+        "created_at": "2026-02-20"
+      },
+      {
+        "id": "demo-0007",
+        "company": "Shopify",
+        "role": "Software Engineering Intern",
+        "stage": "Applying",
+        "deadline": "2026-03-22",
+        "next_action": "Submit application before deadline",
+        "last_contact": null,
+        "notes": "Application portal opens soon. Targeting backend team.",
+        "created_at": "2026-03-12"
+      },
+      {
+        "id": "demo-0008",
+        "company": "Uber",
         "role": "Software Engineering Intern",
         "stage": "Rejected",
         "deadline": null,
         "next_action": null,
-        "last_contact": "2026-07-15",
-        "notes": "Intern recruiting season complete for this cycle.",
-        "created_at": "2026-07-22"
+        "last_contact": "2026-02-01",
+        "notes": "High volume of applicants — not selected for this cycle.",
+        "created_at": "2026-01-10"
       },
       {
-        "id": "baab413d-1053-4387-a295-ab226ce010aa",
-        "company": "Tesla",
-        "role": "System Software Engineer, Graphics (Summer 2026)",
+        "id": "demo-0009",
+        "company": "Lyft",
+        "role": "Software Engineering Intern",
         "stage": "Rejected",
         "deadline": null,
         "next_action": null,
-        "last_contact": "2026-07-02",
-        "notes": "High volume of applications received \u2014 not selected.",
-        "created_at": "2026-07-22"
-      },
-      {
-        "id": "be2bf8ec-a83a-4434-9424-33c76133499d",
-        "company": "Cloudflare",
-        "role": "Software Engineer Intern (Summer 2026)",
-        "stage": "Rejected",
-        "deadline": null,
-        "next_action": null,
-        "last_contact": "2026-06-18",
-        "notes": "Position no longer open.",
-        "created_at": "2026-07-22"
-      },
-      {
-        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-        "company": "Roblox",
-        "role": "Software Engineering Intern",
-        "stage": "Applying",
-        "deadline": null,
-        "next_action": "Submit application",
-        "last_contact": null,
-        "notes": "Recruiter: Nicole Atkins (natkins@roblox.com).",
-        "created_at": "2026-07-31"
-      },
-      {
-        "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
-        "company": "Datadog",
-        "role": "Software Engineering Intern",
-        "stage": "Applying",
-        "deadline": null,
-        "next_action": "Coffee chat with Neal Turett \u2014 ask about intern process/recruiting",
-        "last_contact": null,
-        "notes": "Neal Turett (turettn@gmail.com) \u2014 frat alum, CE background, SWE at Datadog. Coffee chat scheduled.",
-        "created_at": "2026-08-01"
-      },
-      {
-        "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
-        "company": "Stripe",
-        "role": "Software Engineering Intern",
-        "stage": "Applying",
-        "deadline": null,
-        "next_action": "Submit application",
-        "last_contact": null,
-        "notes": "Recruiter: Bethany Adams (bethanyadams@stripe.com).",
-        "created_at": "2026-08-01"
-      },
-      {
-        "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
-        "company": "SpaceX",
-        "role": "Software Engineering Intern",
-        "stage": "Applying",
-        "deadline": null,
-        "next_action": "Submit application",
-        "last_contact": null,
-        "notes": "Recruiter: Christina Knighton (christina.knighton@spacex.com).",
-        "created_at": "2026-08-01"
+        "last_contact": "2026-01-25",
+        "notes": "Position filled internally.",
+        "created_at": "2026-01-08"
       }
     ],
     "stats": {
       "by_stage": {
-        "Applying": 4,
+        "Applying": 1,
         "Applied": 2,
         "Phone Screen": 1,
-        "OA": 0,
+        "OA": 1,
         "Interview": 1,
-        "Offer": 0,
-        "Rejected": 3,
+        "Offer": 1,
+        "Rejected": 2,
         "Closed": 0
       },
-      "active": 11
+      "active": 9
     },
     "stage_colors": {
       "Applying": "#888888",
