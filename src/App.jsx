@@ -25,7 +25,7 @@ export default function App() {
   return (
     <>
       <nav className="topnav">
-        <div className="logo"><span>K.</span> Hill</div>
+        <div className="logo"><span>Life</span> OS</div>
         {TABS.map(t => (
           <button
             key={t}

@@ -45,36 +45,11 @@
     "total_spend_latest": 2361.43,
     "portfolio": {
       "positions": [
-        {
-          "symbol": "VTI",
-          "value": 18420.55,
-          "gain": 2140.22,
-          "gain_pct": 13.14
-        },
-        {
-          "symbol": "QQQ",
-          "value": 7850.30,
-          "gain": 1920.45,
-          "gain_pct": 32.41
-        },
-        {
-          "symbol": "VXUS",
-          "value": 2310.88,
-          "gain": 110.88,
-          "gain_pct": 5.04
-        },
-        {
-          "symbol": "BND",
-          "value": 1021.18,
-          "gain": -78.82,
-          "gain_pct": -7.16
-        },
-        {
-          "symbol": "FSKAX",
-          "value": 7300.17,
-          "gain": 1100.17,
-          "gain_pct": 17.74
-        }
+        { "symbol": "VTI",   "value": 18420.55, "gain": 2140.22, "gain_pct": 13.14 },
+        { "symbol": "QQQ",   "value": 7850.30,  "gain": 1920.45, "gain_pct": 32.41 },
+        { "symbol": "VXUS",  "value": 2310.88,  "gain": 110.88,  "gain_pct": 5.04  },
+        { "symbol": "BND",   "value": 1021.18,  "gain": -78.82,  "gain_pct": -7.16 },
+        { "symbol": "FSKAX", "value": 7300.17,  "gain": 1100.17, "gain_pct": 17.74 }
       ],
       "total": 36903.08,
       "total_gain": 5192.90
@@ -90,14 +65,8 @@
       "Fees": "#999999"
     },
     "investment_goals": {
-      "roth_ira": {
-        "contributed": 3500,
-        "limit": 7000
-      },
-      "brokerage": {
-        "invested_ytd": 18000.0,
-        "monthly_target": 2500
-      }
+      "roth_ira": { "contributed": 3500, "limit": 7000 },
+      "brokerage": { "invested_ytd": 18000.0, "monthly_target": 2500 }
     }
   },
   "recruiting": {
@@ -108,9 +77,9 @@
         "role": "Software Engineering Intern",
         "stage": "Offer",
         "deadline": "2026-03-20",
-        "next_action": "Review offer details and respond by deadline",
+        "next_action": "Review offer and respond by deadline",
         "last_contact": "2026-03-08",
-        "notes": "Received formal offer. Evaluating package — engineering team match is distributed systems.",
+        "notes": "Offer received. Evaluating comp and team fit.",
         "created_at": "2026-01-15"
       },
       {
@@ -119,9 +88,9 @@
         "role": "Software Engineering Intern",
         "stage": "Interview",
         "deadline": null,
-        "next_action": "Prepare for final round — system design + coding",
+        "next_action": "Prepare for final round",
         "last_contact": "2026-03-05",
-        "notes": "Cleared OA and phone screen. Final round scheduled for week of Mar 17.",
+        "notes": "Cleared OA and phone screen. Final round scheduled.",
         "created_at": "2026-01-22"
       },
       {
@@ -130,9 +99,9 @@
         "role": "Software Engineering Intern",
         "stage": "Phone Screen",
         "deadline": null,
-        "next_action": "Prep LeetCode medium — recruiter mentioned DSA focus",
+        "next_action": "Prep DSA — recruiter mentioned LeetCode medium focus",
         "last_contact": "2026-02-28",
-        "notes": "Recruiter reached out via LinkedIn. Phone screen scheduled.",
+        "notes": "Recruiter outreach via LinkedIn. Phone screen scheduled.",
         "created_at": "2026-02-20"
       },
       {
@@ -143,7 +112,7 @@
         "deadline": "2026-03-18",
         "next_action": "Complete OA by deadline",
         "last_contact": "2026-03-10",
-        "notes": "OA received after application. 90-minute window, two coding problems.",
+        "notes": "OA received post-application. 90-min window, two problems.",
         "created_at": "2026-02-10"
       },
       {
@@ -152,9 +121,9 @@
         "role": "Software Engineering Intern",
         "stage": "Applied",
         "deadline": null,
-        "next_action": "Await response — follow up in 2 weeks if no reply",
+        "next_action": "Await response — follow up in 2 weeks",
         "last_contact": "2026-02-14",
-        "notes": "Applied via portal. Interest in infrastructure/DevOps team.",
+        "notes": "Applied via portal.",
         "created_at": "2026-02-14"
       },
       {
@@ -165,7 +134,7 @@
         "deadline": null,
         "next_action": "Await response",
         "last_contact": "2026-02-20",
-        "notes": "Applied to developer experience team opening.",
+        "notes": "Applied via portal.",
         "created_at": "2026-02-20"
       },
       {
@@ -176,7 +145,7 @@
         "deadline": "2026-03-22",
         "next_action": "Submit application before deadline",
         "last_contact": null,
-        "notes": "Application portal opens soon. Targeting backend team.",
+        "notes": "Portal opens soon.",
         "created_at": "2026-03-12"
       },
       {
@@ -187,7 +156,7 @@
         "deadline": null,
         "next_action": null,
         "last_contact": "2026-02-01",
-        "notes": "High volume of applicants — not selected for this cycle.",
+        "notes": "High volume — not selected.",
         "created_at": "2026-01-10"
       },
       {
@@ -227,9 +196,74 @@
     }
   },
   "school": {
-    "entries": []
+    "entries": [
+      {
+        "assignment": "Problem Set 5",
+        "course": "EECS 281",
+        "due_date": "2026-03-18",
+        "status": "In Progress",
+        "notes": "Graph algorithms unit — Dijkstra's and BFS variants"
+      },
+      {
+        "assignment": "Lab Report 3",
+        "course": "ENGR 101",
+        "due_date": "2026-03-15",
+        "status": "In Progress",
+        "notes": "Circuit analysis write-up"
+      },
+      {
+        "assignment": "Project Milestone 2",
+        "course": "EECS 485",
+        "due_date": "2026-03-21",
+        "status": "Not Started",
+        "notes": "Search engine backend — indexer and pagerank"
+      },
+      {
+        "assignment": "Midterm Exam",
+        "course": "MATH 214",
+        "due_date": "2026-03-19",
+        "status": "Not Started",
+        "notes": "Linear algebra — eigenvalues through Ch. 6"
+      },
+      {
+        "assignment": "Problem Set 4",
+        "course": "EECS 281",
+        "due_date": "2026-03-05",
+        "status": "Complete",
+        "notes": "Dynamic programming problems"
+      },
+      {
+        "assignment": "Essay Draft",
+        "course": "ENGLISH 325",
+        "due_date": "2026-03-03",
+        "status": "Complete",
+        "notes": "Peer review submitted"
+      }
+    ]
   },
   "health": {
-    "entries": []
+    "today": "2026-03-14",
+    "entries": [
+      { "date": "2026-03-14", "worked_out": true,  "workout_type": "Lifting", "ate_well": true  },
+      { "date": "2026-03-13", "worked_out": true,  "workout_type": "Run",     "ate_well": true  },
+      { "date": "2026-03-12", "worked_out": false, "workout_type": null,      "ate_well": true  },
+      { "date": "2026-03-11", "worked_out": true,  "workout_type": "Lifting", "ate_well": false },
+      { "date": "2026-03-10", "worked_out": true,  "workout_type": "Lifting", "ate_well": true  },
+      { "date": "2026-03-09", "worked_out": true,  "workout_type": "Run",     "ate_well": true  },
+      { "date": "2026-03-08", "worked_out": false, "workout_type": null,      "ate_well": false },
+      { "date": "2026-03-07", "worked_out": true,  "workout_type": "Lifting", "ate_well": true  },
+      { "date": "2026-03-06", "worked_out": false, "workout_type": null,      "ate_well": true  },
+      { "date": "2026-03-05", "worked_out": true,  "workout_type": "Cycling", "ate_well": true  },
+      { "date": "2026-03-04", "worked_out": true,  "workout_type": "Lifting", "ate_well": false },
+      { "date": "2026-03-03", "worked_out": false, "workout_type": null,      "ate_well": true  },
+      { "date": "2026-03-02", "worked_out": true,  "workout_type": "Run",     "ate_well": true  },
+      { "date": "2026-03-01", "worked_out": true,  "workout_type": "Lifting", "ate_well": true  }
+    ],
+    "stats": {
+      "streak_workout": 5,
+      "streak_ate_well": 3,
+      "pct_workout_30": 70,
+      "pct_ate_well_30": 73
+    }
   }
 }
