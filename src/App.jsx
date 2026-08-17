@@ -24,6 +24,19 @@ export default function App() {
 
   return (
     <>
+      <div style={{
+        background: '#1a1a2e',
+        borderBottom: '1px solid #2d2d5e',
+        color: '#7b7bcc',
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: 3,
+        textTransform: 'uppercase',
+        textAlign: 'center',
+        padding: '7px 0',
+      }}>
+        Demo — all data is fictional
+      </div>
       <nav className="topnav">
         <div className="logo"><span>Life</span> OS</div>
         {TABS.map(t => (

@@ -3,56 +3,56 @@
   "month_label": "March 2026",
   "finance": {
     "net_worth": {
-      "total": 41283.50,
-      "liabilities": 1240.15,
-      "cash": 3180.42,
-      "taxable": 30802.91,
-      "ira": 7300.17
+      "total": 40000.00,
+      "liabilities": 1200.00,
+      "cash": 3000.00,
+      "taxable": 30000.00,
+      "ira": 7000.00
     },
     "income": {
-      "avg_monthly_net": 5847.00,
-      "ytd_net": 11694.00,
+      "avg_monthly_net": 5000.00,
+      "ytd_net": 10000.00,
       "source": "Auto-detected from savings deposits"
     },
     "monthly_spending": {
       "2026-01": {
-        "Restaurants": 127.45,
-        "Supermarkets": 88.20,
-        "Gasoline": 42.10,
+        "Restaurants": 120.00,
+        "Supermarkets": 80.00,
+        "Gasoline": 40.00,
         "Education": 15.00
       },
       "2026-02": {
-        "Restaurants": 94.60,
-        "Supermarkets": 110.33,
-        "Travel/Entertainment": 340.00,
+        "Restaurants": 90.00,
+        "Supermarkets": 110.00,
+        "Travel/Entertainment": 350.00,
         "Fees": 30.00,
         "Education": 15.00
       },
       "2026-03": {
-        "Housing": 1850.00,
-        "Restaurants": 215.80,
-        "Supermarkets": 67.44,
-        "Merchandise": 189.99,
-        "Gasoline": 38.20
+        "Housing": 1800.00,
+        "Restaurants": 200.00,
+        "Supermarkets": 70.00,
+        "Merchandise": 200.00,
+        "Gasoline": 40.00
       }
     },
     "monthly_totals": {
-      "2026-01": 272.75,
-      "2026-02": 589.93,
-      "2026-03": 2361.43
+      "2026-01": 255.00,
+      "2026-02": 595.00,
+      "2026-03": 2310.00
     },
     "latest_month": "2026-03",
-    "total_spend_latest": 2361.43,
+    "total_spend_latest": 2310.00,
     "portfolio": {
       "positions": [
-        { "symbol": "VTI",   "value": 18420.55, "gain": 2140.22, "gain_pct": 13.14 },
-        { "symbol": "QQQ",   "value": 7850.30,  "gain": 1920.45, "gain_pct": 32.41 },
-        { "symbol": "VXUS",  "value": 2310.88,  "gain": 110.88,  "gain_pct": 5.04  },
-        { "symbol": "BND",   "value": 1021.18,  "gain": -78.82,  "gain_pct": -7.16 },
-        { "symbol": "FSKAX", "value": 7300.17,  "gain": 1100.17, "gain_pct": 17.74 }
+        { "symbol": "VTI",   "value": 18000.00, "gain": 2000.00, "gain_pct": 12.50 },
+        { "symbol": "QQQ",   "value": 8000.00,  "gain": 2000.00, "gain_pct": 33.33 },
+        { "symbol": "VXUS",  "value": 2000.00,  "gain": 100.00,  "gain_pct": 5.26  },
+        { "symbol": "BND",   "value": 1000.00,  "gain": -100.00, "gain_pct": -9.09 },
+        { "symbol": "FSKAX", "value": 7000.00,  "gain": 1000.00, "gain_pct": 16.67 }
       ],
-      "total": 36903.08,
-      "total_gain": 5192.90
+      "total": 36000.00,
+      "total_gain": 5000.00
     },
     "category_colors": {
       "Housing": "#f0c040",
@@ -66,25 +66,25 @@
     },
     "investment_goals": {
       "roth_ira": { "contributed": 3500, "limit": 7000 },
-      "brokerage": { "invested_ytd": 18000.0, "monthly_target": 2500 }
+      "brokerage": { "invested_ytd": 18000.00, "monthly_target": 2500 }
     }
   },
   "recruiting": {
     "entries": [
       {
         "id": "demo-0001",
-        "company": "Confluent",
+        "company": "Company A",
         "role": "Software Engineering Intern",
         "stage": "Offer",
         "deadline": "2026-03-20",
         "next_action": "Review offer and respond by deadline",
         "last_contact": "2026-03-08",
-        "notes": "Offer received. Evaluating comp and team fit.",
+        "notes": "Offer received.",
         "created_at": "2026-01-15"
       },
       {
         "id": "demo-0002",
-        "company": "Airbnb",
+        "company": "Company B",
         "role": "Software Engineering Intern",
         "stage": "Interview",
         "deadline": null,
@@ -95,29 +95,29 @@
       },
       {
         "id": "demo-0003",
-        "company": "Snowflake",
+        "company": "Company C",
         "role": "Software Engineering Intern",
         "stage": "Phone Screen",
         "deadline": null,
-        "next_action": "Prep DSA — recruiter mentioned LeetCode medium focus",
+        "next_action": "Prep for call",
         "last_contact": "2026-02-28",
-        "notes": "Recruiter outreach via LinkedIn. Phone screen scheduled.",
+        "notes": "Recruiter outreach via LinkedIn.",
         "created_at": "2026-02-20"
       },
       {
         "id": "demo-0004",
-        "company": "MongoDB",
+        "company": "Company D",
         "role": "Software Engineering Intern",
         "stage": "OA",
         "deadline": "2026-03-18",
         "next_action": "Complete OA by deadline",
         "last_contact": "2026-03-10",
-        "notes": "OA received post-application. 90-min window, two problems.",
+        "notes": "OA received post-application.",
         "created_at": "2026-02-10"
       },
       {
         "id": "demo-0005",
-        "company": "HashiCorp",
+        "company": "Company E",
         "role": "Software Engineering Intern",
         "stage": "Applied",
         "deadline": null,
@@ -128,7 +128,7 @@
       },
       {
         "id": "demo-0006",
-        "company": "Twilio",
+        "company": "Company F",
         "role": "Software Engineering Intern",
         "stage": "Applied",
         "deadline": null,
@@ -139,7 +139,7 @@
       },
       {
         "id": "demo-0007",
-        "company": "Shopify",
+        "company": "Company G",
         "role": "Software Engineering Intern",
         "stage": "Applying",
         "deadline": "2026-03-22",
@@ -150,24 +150,24 @@
       },
       {
         "id": "demo-0008",
-        "company": "Uber",
+        "company": "Company H",
         "role": "Software Engineering Intern",
         "stage": "Rejected",
         "deadline": null,
         "next_action": null,
         "last_contact": "2026-02-01",
-        "notes": "High volume — not selected.",
+        "notes": "Not selected.",
         "created_at": "2026-01-10"
       },
       {
         "id": "demo-0009",
-        "company": "Lyft",
+        "company": "Company I",
         "role": "Software Engineering Intern",
         "stage": "Rejected",
         "deadline": null,
         "next_action": null,
         "last_contact": "2026-01-25",
-        "notes": "Position filled internally.",
+        "notes": "Position filled.",
         "created_at": "2026-01-08"
       }
     ],
