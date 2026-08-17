@@ -1,0 +1,7 @@
+{
+  "updated": null,
+  "finance": null,
+  "recruiting": { "entries": [], "stats": { "by_stage": {}, "active": 0 }, "stage_colors": {} },
+  "school": { "entries": [] },
+  "health": { "entries": [] }
+}
