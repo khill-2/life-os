@@ -15,7 +15,7 @@ GMAIL_QUERIES = {
     ),
     "school": (
         '"assignment due" OR "project due" OR exam OR deadline OR submission OR '
-        "Canvas OR Gradescope OR syllabus OR EECS OR course OR university OR Michigan"
+        "Canvas OR Gradescope OR syllabus OR course OR university"
     ),
 }
 
@@ -32,19 +32,20 @@ STAGE_KEYWORDS = [
 ]
 
 # Companies the user is actively targeting (used for context-aware classification)
+# Customize this list to match the companies you're applying to
 TARGET_COMPANIES = {
-    "amazon", "spacex", "databricks", "roblox", "robinhood", "tiktok", "zoom",
-    "google", "meta", "apple", "microsoft", "netflix", "nvidia", "openai",
-    "anthropic", "stripe", "figma", "notion", "rivian",
+    "google", "meta", "apple", "microsoft", "amazon",
+    "stripe", "figma", "notion", "openai", "anthropic",
 }
 
 # Finance sender domains → friendly names
+# Add your own bank/brokerage domains here
 FINANCE_DOMAINS = {
-    "robinhood.com": "Robinhood",
-    "usaa.com": "USAA",
     "venmo.com": "Venmo",
     "paypal.com": "PayPal",
     "chase.com": "Chase",
     "bankofamerica.com": "Bank of America",
     "wellsfargo.com": "Wells Fargo",
+    "robinhood.com": "Robinhood",
+    "schwab.com": "Schwab",
 }
