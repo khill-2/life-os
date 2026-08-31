@@ -1,178 +1,81 @@
 # Life OS
 
-A personal dashboard that scrapes your Gmail for signals about your own life — recruiting pipeline, school deadlines, health tracking, finances — and presents them in a clean React UI deployed on Vercel.
-
-Built as a personal tool, open-sourced as a template. The panels shown here reflect one person's interests (recruiting, school, health). Fork it and swap in whatever matters to you.
-
-![Dashboard preview](public/data/dashboard.json)
+A personal dashboard that keeps every corner of my life in one place — recruiting pipeline, finances, school deadlines, and fitness — all pulled automatically from Gmail, Apple Health, and bank exports, and deployed privately on Vercel behind auth.
 
 ---
 
-## How it works
+## Finance
 
-```
-Gmail (OAuth2)
-  └─ gmail_scraper.py     fetch emails matching your queries
-  └─ classifier.py        extract structured fields (company, stage, date, etc.)
-  └─ json_writer.py       deduplicate and write to data/*.json
-  └─ main.py              orchestrate all of the above
+Net worth breakdown, monthly spend by category, investment portfolio P&L, and progress toward annual savings goals — fed by CSV exports from 6 bank and brokerage accounts.
 
-data/*.json
-  └─ main.py (_merge_dashboard)   merge into public/data/dashboard.json
-
-public/data/dashboard.json
-  └─ vite build           inline as window.__DASHBOARD_DATA__ at build time
-  └─ Vercel               serve as a fully static site
-```
-
-No database, no server, no runtime API calls. Everything is baked into the build.
+![Finance Dashboard](screenshots/finance.png)
 
 ---
 
-## Setup
+## Recruiting
 
-### 1. Clone and install
+Full internship pipeline auto-populated from Gmail — stage inferred from email signals (Applied → Phone Screen → OA → Interview → Offer), zero manual entry.
+
+![Recruiting Pipeline](screenshots/recruiting.png)
+
+---
+
+## School
+
+Assignment deadlines extracted from Canvas and Gradescope emails, surfaced by urgency with status tracking.
+
+![School Deadlines](screenshots/school.png)
+
+---
+
+## Health
+
+Workout log pulled from Apple Health exports — runs, lifts, and ski days with pace, heart rate, duration, and a 30-day activity calendar.
+
+![Health Log](screenshots/health.png)
+
+---
+
+## Make it yours
+
+This is designed to be forked and adapted. Every panel is an independent module — adding a new data source means writing a scraper and a classifier, wiring it into `main.py`, and dropping a new panel into the React frontend. The data lives in plain JSON files you control, the dashboard deploys to your own Vercel project, and Supabase auth keeps it private.
+
+Things people might track that aren't here yet: sleep, nutrition, job applications outside recruiting season, reading lists, budget categories, net worth milestones, travel plans. If it produces data, it can be a panel.
+
+**To get started:**
 
 ```bash
-git clone https://github.com/your-username/life-os
-cd life-os
+git clone https://github.com/khill-2/myOS.git
+cd myOS
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 npm install
 ```
 
-### 2. Google OAuth credentials
-
-You need a Google Cloud project with the Gmail API enabled.
-
-1. Go to [console.cloud.google.com](https://console.cloud.google.com)
-2. Create a project → Enable the Gmail API
-3. Create an OAuth 2.0 Desktop client → download the JSON
-4. Save it as `credentials.json` in the project root
-5. (Optional) Repeat for a second Gmail account → save as `credentials_school.json`
-
-On first run, a browser window will open for you to authorize. The token is cached as `token_personal.json` so subsequent runs are silent.
-
-### 3. Configure your queries and keywords
-
-Edit `config.py` to match what you want to track:
-
-```python
-# Gmail search queries — controls what emails get fetched
-QUERIES = {
-    'recruiting': 'subject:(interview OR offer OR application) newer_than:90d',
-    'school':     'subject:(due OR deadline OR assignment) newer_than:30d',
-}
-
-# Keywords that signal a recruiting stage
-STAGE_KEYWORDS = {
-    'Offer':        ['offer', 'pleased to offer'],
-    'Interview':    ['interview', 'meet with the team'],
-    'Phone Screen': ['phone screen', 'introductory call'],
-    ...
-}
-
-# Companies you're targeting — emails from these get boosted signal
-TARGET_COMPANIES = ['stripe', 'figma', 'notion', ...]
-```
-
-### 4. Run
+Set up credentials (Google OAuth for Gmail, Supabase for auth) following the notes in `CLAUDE.md`, then:
 
 ```bash
-# Preview without writing anything
-python main.py --dry-run
-
-# Full scrape + rebuild dashboard
-python main.py
-
-# Only look at recent emails
-python main.py --since 30
-
-# One account only
-python main.py --accounts personal
+python main.py --dry-run   # preview what would be scraped
+python main.py             # live run — scrapes, classifies, rebuilds site
 ```
-
-### 5. Local dev
-
-```bash
-npm run dev
-```
-
-Vite reads `public/data/dashboard.json` and serves the React app at `localhost:5173`.
 
 ---
 
-## Deployment
+## Architecture
 
-Push to GitHub and connect to [Vercel](https://vercel.com). The build command is `vite build` — no environment variables needed for a basic deployment.
-
-For a **auth-gated production deployment** (so your real data stays private):
-1. Create a [Supabase](https://supabase.com) project
-2. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to Vercel environment variables
-3. Create your user under Supabase → Authentication → Users
-
----
-
-## Customizing panels
-
-Each panel is a standalone React component in `src/panels/`. The dashboard JSON shape drives what's displayed.
-
-**To add a new panel (e.g. "Fitness"):**
-
-1. Add a section to `public/data/dashboard.json`:
-```json
-{
-  "fitness": {
-    "entries": [],
-    "stats": {}
-  }
-}
+```
+Gmail (2 accounts, OAuth 2.0)  ──┐
+Apple Health export (XML)       ──┼──▶  classifier.py  ──▶  data/*.json  ──▶  dashboard.json  ──▶  Vercel
+Bank CSV exports (6 accounts)  ──┘
 ```
 
-2. Create `src/panels/Fitness.jsx` to render it
-
-3. Add it to the tab list in `src/App.jsx`:
-```jsx
-const TABS = ['Finance', 'Recruiting', 'School', 'Health', 'Fitness']
-```
-
-4. Add a classifier in `classifier.py` that extracts fitness signals from your Gmail and writes to `data/fitness.json`
-
-5. Add a merge step in `main.py`'s `_merge_dashboard()` to fold it into `public/data/dashboard.json`
-
-**To remove a panel you don't need:** delete the tab from `TABS`, remove the component import in `App.jsx`, and skip the classifier entirely.
-
----
-
-## Finance tracking
-
-The finance panel is populated separately from a CSV export workflow rather than Gmail:
-
-```bash
-# Open all bank sites at once
-python main.py --csv-open
-
-# After downloading CSVs to ~/Downloads:
-python main.py --csv
-```
-
-Supported out of the box: Capital One, Discover, Chase, Schwab, Fidelity. Add your own bank by editing `csv_scraper.py`.
-
----
-
-## Data files
-
-| File | Purpose |
+| File | Role |
 |---|---|
-| `data/recruiting.json` | Recruiting pipeline entries |
-| `data/school.json` | School deadlines |
-| `public/data/dashboard.json` | Generated — rebuilt on every run, do not edit directly |
-| `credentials.json` | Google OAuth client *(gitignored)* |
-| `token_personal.json` | Cached OAuth token *(gitignored)* |
-| `financial_snapshot_*.json` | Finance snapshots *(gitignored)* |
+| `main.py` | Orchestrator — CLI flags, account routing, site rebuild |
+| `gmail_scraper.py` | OAuth 2.0 per account, Gmail API fetch |
+| `classifier.py` | 3-tier filter: blocklist → signal detection → field extraction |
+| `json_writer.py` | Deduplicating writes to `data/*.json` |
+| `health_scraper.py` | Apple Health XML export parser |
+| `csv_scraper.py` | Bank CSV normalizer across 6 institutions |
 
----
-
-## License
-
-MIT
+**Stack:** Python · Gmail API · Apple Health · React · Vite · Supabase Auth · Vercel
